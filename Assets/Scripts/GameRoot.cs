@@ -19,7 +19,7 @@ public class GameRoot : MonoBehaviour
     {
         Instance = this;
         DontDestroyOnLoad(this);
-        Debug.Log("Game Start...");
+        PECommon.Log("Game Start...");
 
         ClearUIRoot();
 
@@ -41,6 +41,9 @@ public class GameRoot : MonoBehaviour
     private void Init()
     {
         //服务器模块初始化
+        NetSvc net = GetComponent<NetSvc>();
+        net.InitSvc();
+
         ResSvc res = GetComponent<ResSvc>();
         res.InitSvc();
         AudioSvc audio = GetComponent<AudioSvc>();

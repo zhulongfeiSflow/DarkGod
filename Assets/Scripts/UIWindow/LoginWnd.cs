@@ -6,6 +6,7 @@
 	功能：登录注册界面
 *****************************************************/
 
+using PEProtocol;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,7 +22,7 @@ public class LoginWnd : WindowRoot
         base.InitWnd();
 
         //获取本地存储的账号密码
-        if (PlayerPrefs.HasKey("Acct")&& PlayerPrefs.HasKey("Pass"))
+        if (PlayerPrefs.HasKey("Acct") && PlayerPrefs.HasKey("Pass"))
         {
             iptAcct.text = PlayerPrefs.GetString("Acct");
             iptPass.text = PlayerPrefs.GetString("Pass");
@@ -42,18 +43,25 @@ public class LoginWnd : WindowRoot
     {
         audioSvc.PlayUIAudio(Constants.UILoginBtn);
 
-        string acct = iptAcct.text;
-        string pass = iptPass.text;
+        string _acct = iptAcct.text;
+        string _pass = iptPass.text;
 
-        if (acct != "" && pass != "")
+        if (_acct != "" && _pass != "")
         {
-            PlayerPrefs.SetString("Acct", acct);
-            PlayerPrefs.SetString("Pass", pass);
+            PlayerPrefs.SetString("Acct", _acct);
+            PlayerPrefs.SetString("Pass", _pass);
 
             //Todo 发送网络消息，请求登录
-
-            //to remove
-            LoginSys.Instance.RsLogin();
+            GameMsg msg = new GameMsg
+            {
+                cmd = (int)CMD.ReqLogin,
+                reqLogin = new ReqLogin
+                {
+                    acct = _acct,
+                    pass = _pass
+                }
+            };
+            netSvc.SendMsg(msg);
         }
         else
         {

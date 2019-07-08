@@ -903,10 +903,6 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 1054077260700148, guid: e04b2b5e62636b243a9d71082d0a5538, type: 2}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e04b2b5e62636b243a9d71082d0a5538, type: 2}
   m_IsPrefabParent: 0
@@ -925,6 +921,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1859678019}
   - component: {fileID: 1859678020}
+  - component: {fileID: 1859678024}
   - component: {fileID: 1859678021}
   - component: {fileID: 1859678023}
   - component: {fileID: 1859678022}
@@ -1002,6 +999,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bgAudio: {fileID: 133834141}
   uiAudio: {fileID: 980044747}
+--- !u!114 &1859678024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1859678018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44cf476a1e5cbbd4a8cc6f0925aa3816, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2131838040
 Prefab:
   m_ObjectHideFlags: 0
