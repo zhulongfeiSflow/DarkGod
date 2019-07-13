@@ -6,6 +6,7 @@
 	功能：角色创建界面
 *****************************************************/
 
+using PEProtocol;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,7 +21,7 @@ public class CreateWnd : WindowRoot
         iptName.text = resSvc.GetRDNameData(false);
     }
 
-    public  void ClickRandBtn()
+    public void ClickRandBtn()
     {
         audioSvc.PlayUIAudio(Constants.UIClickBtn);
 
@@ -33,17 +34,25 @@ public class CreateWnd : WindowRoot
     {
         audioSvc.PlayUIAudio(Constants.UIClickBtn);
 
-        if (iptName.text!="")
+        if (iptName.text != "")
         {
-            //TODO
             //发送名字数据到服务器，登录主城
-            GameRoot.AddTips("功能正在开发中。。。");
+            GameMsg msg = new GameMsg
+            {
+                cmd = (int)CMD.ReqRename,
+                reqRename = new ReqRename
+                {
+                    name = iptName.text
+                }
+            };
+
+            netSvc.SendMsg(msg);
 
         }
         else
         {
             GameRoot.AddTips("当前名字不符合规范");
         }
-        
+
     }
 }

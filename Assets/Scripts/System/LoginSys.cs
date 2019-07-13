@@ -6,6 +6,7 @@
 	功能：登录注册业务系统
 *****************************************************/
 
+using PEProtocol;
 using UnityEngine;
 
 public class LoginSys : SystemRoot
@@ -31,7 +32,7 @@ public class LoginSys : SystemRoot
         //to do 
         //异步加载登录场景
         //显示加载的进度条
-        resSvc.AsyncLoadScene(Constants.SceneLogin, ()=>
+        resSvc.AsyncLoadScene(Constants.SceneLogin, () =>
         {
             //加载完成后打开注册登录界面
             loginWnd.SetWndState(true);
@@ -40,13 +41,31 @@ public class LoginSys : SystemRoot
 
     }
 
-    public void RsLogin()
+    public void RspLogin(GameMsg msg)
     {
         GameRoot.AddTips("登录成功");
+        GameRoot.Instance.SetPlayerData(msg.rspLogin);
 
-        //打开角色创建界面
-        createWnd.SetWndState(true);
+        if (msg.rspLogin.playerData.name == "")
+        {
+            createWnd.SetWndState(true);
+        }
+        else
+        {
+            MainCitySys.Instance.EnterMainCity();
+        }
         //关闭登录界面
         loginWnd.SetWndState(false);
+    }
+
+    public void RspRename(GameMsg msg)
+    {
+        GameRoot.Instance.SetPlayerName(msg.rspRename.name);
+
+        //跳转场景进入主城
+        MainCitySys.Instance.EnterMainCity();
+
+        //关闭创建界面
+        createWnd.SetWndState(false);
     }
 }
