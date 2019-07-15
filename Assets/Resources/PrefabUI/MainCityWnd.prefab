@@ -981,8 +981,8 @@ Animation:
   serializedVersion: 3
   m_Animation: {fileID: 0}
   m_Animations:
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 7400000, guid: c854546c9a222a64094636db99d7cca1, type: 2}
+  - {fileID: 7400000, guid: 0440331230ae430458775c17232df068, type: 2}
   m_WrapMode: 0
   m_PlayAutomatically: 0
   m_AnimatePhysics: 0
@@ -1398,7 +1398,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 114048352389460114}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 114692615467787894}
+        m_MethodName: ClickGuideBtn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &114217636437181734
@@ -1997,7 +2008,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 114517819866571002}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 114692615467787894}
+        m_MethodName: ClickHeadBtn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &114538405925573836
@@ -2321,7 +2343,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 114692615467787894}
         m_MethodName: ClickMenuBtn
         m_Mode: 1
         m_Arguments:
@@ -2345,12 +2367,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 290430a2bf82e6d45905c1c9a9ae2801, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  imgTouch: {fileID: 114706398647665544}
+  imgDirBg: {fileID: 114892664293258898}
+  imgDirPoint: {fileID: 114075990944340214}
+  menuAni: {fileID: 111253612623194198}
+  btnMenu: {fileID: 114691319214370830}
   txtFight: {fileID: 114504755558402744}
   txtPower: {fileID: 114990855555380430}
   imgPowerPrg: {fileID: 114569659174644462}
   txtLevel: {fileID: 114022017739223036}
   TxtName: {fileID: 114343733885019016}
   txtExpPrg: {fileID: 114571189095875522}
+  expPrgTrans: {fileID: 224362296523627554}
+  btnGuide: {fileID: 114212859752877030}
 --- !u!114 &114693274595638522
 MonoBehaviour:
   m_ObjectHideFlags: 1
