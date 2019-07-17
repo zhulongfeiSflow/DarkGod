@@ -22,6 +22,8 @@ public class ResSvc : MonoBehaviour
         InitRDNameCfg(PathDefine.RDNameCfg);
         InitMapCfg(PathDefine.MapCfg);
         InitGuideCfg(PathDefine.GuideCfg);
+        InitStrongCfg(PathDefine.StrongCfg);
+
         PECommon.Log("Init ResSvc...");
     }
 
@@ -109,6 +111,7 @@ public class ResSvc : MonoBehaviour
     }
 
     #region InitCfgs
+
     private bool TryGetRootNodeList(string path, out XmlNodeList nodList)
     {
         TextAsset xml = Resources.Load<TextAsset>(path);
@@ -297,8 +300,120 @@ public class ResSvc : MonoBehaviour
     }
     #endregion
 
+    #region 强化升级配置
+    private Dictionary<int, Dictionary<int, StrongCfg>> strongDic = new Dictionary<int, Dictionary<int, StrongCfg>>();
+    private void InitStrongCfg(string path)
+    {
+        XmlNodeList nodList = null;
+        if (TryGetRootNodeList(path, out nodList))
+        {
+            for (int i = 0; i < nodList.Count; i++)
+            {
+                XmlElement ele = nodList[i] as XmlElement;
+
+                if (ele.GetAttributeNode("ID") == null)
+                {
+                    continue;
+                }
+                int ID = Convert.ToInt32(ele.GetAttributeNode("ID").InnerText);
+
+                StrongCfg sd = new StrongCfg() { ID = ID };
+
+                foreach (XmlElement e in nodList[i].ChildNodes)
+                {
+                    int val= int.Parse(e.InnerText);
+                    switch (e.Name)
+                    {
+                        case "pos":
+                            sd.pos = val;
+                            break;
+                        case "starlv":
+                            sd.starlv = val;
+                            break;
+                        case "addhp":
+                            sd.addhp = val;
+                            break;
+                        case "addhurt":
+                            sd.addhurt = val;
+                            break;
+                        case "adddef":
+                            sd.adddef = val;
+                            break;
+                        case "minlv":
+                            sd.minlv = val;
+                            break;
+                        case "coin":
+                            sd.coin = val;
+                            break;
+                        case "crystal":
+                            sd.crystal = val;
+                            break;
+                    }
+                }
+
+                Dictionary<int, StrongCfg> dic = null;
+                if (strongDic.TryGetValue(sd.pos, out dic))
+                {
+                    dic.Add(sd.starlv, sd);
+                }
+                else
+                {
+                    dic = new Dictionary<int, StrongCfg>();
+                    dic.Add(sd.starlv, sd);
+                    strongDic.Add(sd.pos, dic);
+                }
+            }
+        }
+    }
+
+    public StrongCfg GetStrongData(int pos, int startlv)
+    {
+        StrongCfg sd = null;
+        Dictionary<int, StrongCfg> dic = null;
+
+        if (strongDic.TryGetValue(pos, out dic))
+        {
+            if (dic.ContainsKey(startlv))
+            {
+                sd = dic[startlv];
+            }
+        }
+        return sd;
+    }
+
+    public int GetPropAddValPreLv(int pos, int starlv, int type)
+    {
+
+        Dictionary<int, StrongCfg > posDic = null;
+        int val = 0;
+        if (strongDic.TryGetValue(pos, out posDic))
+        {
+            for (int i = 0; i < starlv; i++)
+            {
+                StrongCfg sd;
+                if (posDic.TryGetValue(i,out sd))
+                {
+                    switch (type)
+                    {
+                        case 1:
+                            val += sd.addhp;
+                            break;
+                        case 2:
+                            val += sd.addhurt;
+                            break;
+                        case 3:
+                            val += sd.adddef;
+                            break;
+                    }
+                }
+            }
+        }
+        return val;
+    }
+
     #endregion
 
+    #endregion
 
     #region 字符串转化 
     public static Vector3 GetVec3ByString(string p_sVec3)

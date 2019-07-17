@@ -48,7 +48,9 @@ public class NetSvc : MonoBehaviour
                     break;
             }
         });
-        client.StartAsClient(SrvCfg.srvIP, SrvCfg.srvPort);
+        //client.StartAsClient(SrvCfg.srvIP, SrvCfg.srvPort);
+        //client.StartAsClient("183.159.248.75", 9009); //外网测试
+        client.StartAsClient("192.168.254.100", 17888); //内网测试
 
 
         PECommon.Log("Init NetSvc...");
@@ -93,6 +95,10 @@ public class NetSvc : MonoBehaviour
         {
             switch ((ErrorCode)msg.err)
             {
+                case ErrorCode.ServerDataError:
+                    PECommon.Log("服务器数据异常", LogType.Error);
+                    GameRoot.AddTips("客户端数据异常");
+                    break;
                 case ErrorCode.UpdateDBError:
                     PECommon.Log("数据库更新异常", LogType.Error);
                     GameRoot.AddTips("网络不稳定");
@@ -103,6 +109,15 @@ public class NetSvc : MonoBehaviour
                 case ErrorCode.WrongPass:
                     GameRoot.AddTips("密码错误");
                     break;
+                case ErrorCode.LackLevel:
+                    GameRoot.AddTips("角色等级不够");
+                    break;
+                case ErrorCode.LackCoin:
+                    GameRoot.AddTips("金币数量不够");
+                    break;
+                case ErrorCode.LackCrystal:
+                    GameRoot.AddTips("水晶数量不够");
+                    break;
 
             }
             return;
@@ -112,13 +127,17 @@ public class NetSvc : MonoBehaviour
         {
             case CMD.None:
                 break;
-            case CMD.ReqLogin:
-                break;
             case CMD.RspLogin:
                 LoginSys.Instance.RspLogin(msg);
                 break;
             case CMD.RspRename:
                 LoginSys.Instance.RspRename(msg);
+                break;
+            case CMD.RspGuide:
+                MainCitySys.Instance.RspGuide(msg);
+                break;
+            case CMD.RspStrong:
+                MainCitySys.Instance.RspStrong(msg);
                 break;
             default:
                 break;

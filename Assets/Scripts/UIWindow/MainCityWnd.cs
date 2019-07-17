@@ -126,9 +126,9 @@ public class MainCityWnd : WindowRoot
             case Constants.NPCTrader:
                 spPath = PathDefine.TraderHead;
                 break;
-                //case -1:
-                //    spPath = PathDefine.TaskHead;
-                //    break;
+            default:
+                spPath = PathDefine.TaskHead;
+                break;
         }
 
         Image img = btnGuide.GetComponent<Image>();
@@ -137,6 +137,13 @@ public class MainCityWnd : WindowRoot
     #endregion
 
     #region ClickEvents
+
+    public void ClickStrongBtn()
+    {
+        audioSvc.PlayUIAudio(Constants.UIOpenPage);
+        MainCitySys.Instance.OpenStrongWnd();
+    }
+
     public void ClickGuideBtn()
     {
         audioSvc.PlayUIAudio(Constants.UIClickBtn);

@@ -6,8 +6,44 @@
 	功能：常量配置
 *****************************************************/
 
+
+public enum TxtColor
+{
+    Red,
+    Green,
+    Blue,
+    Yellow,
+}
+
 public class Constants
 {
+    private const string ColorRed = "<color=#FF0000FF>";
+    private const string ColorGreen = "<color=#00FF00FF>";
+    private const string ColorBlue = "<color=#00B4FFFF>";
+    private const string ColorYellow = "<color=#FFFF00FF>";
+    private const string ColorEnd = "</color>";
+
+    public static string Color(string str, TxtColor c)
+    {
+        string result = "";
+        switch (c)
+        {
+            case TxtColor.Red:
+                result = ColorRed + str + ColorEnd;
+                break;
+            case TxtColor.Green:
+                result = ColorGreen + str + ColorEnd;
+                break;
+            case TxtColor.Blue:
+                result = ColorBlue + str + ColorEnd;
+                break;
+            case TxtColor.Yellow:
+                result = ColorYellow + str + ColorEnd;
+                break;
+        }
+        return result;
+    }
+
     //AutoGuideNpc
     public const int NPCWiseMan = 0;
     public const int NPCGeneral = 1;
@@ -30,6 +66,7 @@ public class Constants
     public const string UIClickBtn = "uiClickBtn";
     public const string UIExtenBtn = "uiExtenBtn";
     public const string UIOpenPage = "uiOpenPage";
+    public const string FBItemEnter = "fbitem";
 
     //屏幕标准宽高
     public const int ScreenStandardWidth = 1334;

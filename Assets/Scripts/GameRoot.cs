@@ -8,8 +8,9 @@
 
 using PEProtocol;
 using UnityEngine;
+using System;
 
-public class GameRoot : MonoBehaviour 
+public class GameRoot : MonoBehaviour
 {
     public static GameRoot Instance = null;
 
@@ -81,5 +82,28 @@ public class GameRoot : MonoBehaviour
     public void SetPlayerName(string name)
     {
         PlayerData.name = name;
+    }
+
+    public void SetPlayerDataByGuide(RspGuide data)
+    {
+        PlayerData.coin = data.coin;
+        PlayerData.lv = data.lv;
+        PlayerData.exp = data.exp;
+        PlayerData.guideid = data.guideid;
+
+    }
+
+    public void SetPlayerDataByRspStrong(RspStrong data)
+    {
+        PlayerData.coin = data.coin;
+        PlayerData.crystal = data.crystal;
+        PlayerData.hp = data.hp;
+        PlayerData.ad = data.ad;
+        PlayerData.ap = data.ap;
+        PlayerData.addef = data.addef;
+        PlayerData.apdef = data.apdef;
+
+        PlayerData.strongArr = data.strongArr;
+
     }
 }

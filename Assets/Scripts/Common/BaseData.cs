@@ -7,6 +7,19 @@
 *****************************************************/
 using UnityEngine;
 
+
+public class StrongCfg : BaseData<StrongCfg>
+{
+    public int pos;
+    public int starlv;
+    public int addhp;
+    public int addhurt;
+    public int adddef;
+    public int minlv;
+    public int coin;
+    public int crystal;
+}
+
 public class AutoGuideCfg : BaseData<AutoGuideCfg>
 {
     public int npcID;//触发任务目标NPC索引号
