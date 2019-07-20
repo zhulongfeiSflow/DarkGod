@@ -6,17 +6,21 @@
 	功能：网络服务
 *****************************************************/
 
+//#define 使用外网
+
 using PENet;
 using PEProtocol;
 using System.Collections.Generic;
+using System.Net;
 using UnityEngine;
 
 public class NetSvc : MonoBehaviour
 {
     public static NetSvc Instance = null;
 
+    public bool isInner = true;
     public static readonly string obj = "lock";
-    PESocket<ClientSession, GameMsg> client = null;
+    private PESocket<ClientSession, GameMsg> client = null;
     private Queue<GameMsg> msgQue = new Queue<GameMsg>();
 
     public void InitSvc()
@@ -49,9 +53,16 @@ public class NetSvc : MonoBehaviour
             }
         });
         //client.StartAsClient(SrvCfg.srvIP, SrvCfg.srvPort);
-        //client.StartAsClient("183.159.248.75", 9009); //外网测试
-        client.StartAsClient("192.168.254.100", 17888); //内网测试
-
+        if (isInner)
+        {
+            client.StartAsClient(SrvCfg.localIP, SrvCfg.innerPort); //内网测试
+        }
+        else
+        {
+            IPHostEntry host = Dns.GetHostEntry(SrvCfg.strDomain);
+            IPAddress ip = host.AddressList[0];
+            client.StartAsClient(ip.ToString(), SrvCfg.externalPort); //外网测试
+        }
 
         PECommon.Log("Init NetSvc...");
     }
@@ -103,11 +114,17 @@ public class NetSvc : MonoBehaviour
                     PECommon.Log("数据库更新异常", LogType.Error);
                     GameRoot.AddTips("网络不稳定");
                     break;
+                case ErrorCode.ClientDataError:
+                    PECommon.Log("客户端数据异常", LogType.Error);
+                    break;
                 case ErrorCode.AcctIsOnLine:
                     GameRoot.AddTips("当前账号已经上线");
                     break;
                 case ErrorCode.WrongPass:
                     GameRoot.AddTips("密码错误");
+                    break;
+                case ErrorCode.NameIsExist:
+                    GameRoot.AddTips("该角色名已存在请重新选择！");
                     break;
                 case ErrorCode.LackLevel:
                     GameRoot.AddTips("角色等级不够");
@@ -118,7 +135,12 @@ public class NetSvc : MonoBehaviour
                 case ErrorCode.LackCrystal:
                     GameRoot.AddTips("水晶数量不够");
                     break;
-
+                case ErrorCode.LackDiamond:
+                    GameRoot.AddTips("钻石数量不够");
+                    break;
+                default:
+                    GameRoot.AddTips("未知错误！"+ ((ErrorCode)msg.err).ToString());
+                    break;
             }
             return;
         }
@@ -139,7 +161,23 @@ public class NetSvc : MonoBehaviour
             case CMD.RspStrong:
                 MainCitySys.Instance.RspStrong(msg);
                 break;
+            case CMD.PshChat:
+                MainCitySys.Instance.PshCaht(msg);
+                break;
+            case CMD.RspBuy:
+                MainCitySys.Instance.RspBuy(msg);
+                break;
+            case CMD.PshPower:
+                MainCitySys.Instance.PshPower(msg);
+                break;
+            case CMD.RspTakeTaskReward:
+                MainCitySys.Instance.RspTakeTaskReward(msg);
+                break;
+            case CMD.PshTaskPrgs:
+                MainCitySys.Instance.PshTaskPrgs(msg);
+                break;
             default:
+                GameRoot.AddTips("该请求客户端不支持！"+((CMD)msg.cmd).ToString());
                 break;
         }
     }

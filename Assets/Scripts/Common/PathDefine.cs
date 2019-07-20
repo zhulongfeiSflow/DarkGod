@@ -6,13 +6,18 @@
 	功能：路径常量
 *****************************************************/
 
-public class PathDefine
-{
+public class PathDefine {
     #region Configs
     public const string RDNameCfg = "ResCfgs/rdname";
     public const string MapCfg = "ResCfgs/map";
     public const string GuideCfg = "ResCfgs/guide";
     public const string StrongCfg = "ResCfgs/strong";
+    public const string TaskCfg = "ResCfgs/taskreward";
+    #endregion
+
+    #region chat
+    public const string BtnType1 = "ResImages/btntype1";
+    public const string BtnType2 = "ResImages/btntype2";
     #endregion
 
     #region Strong
@@ -30,6 +35,10 @@ public class PathDefine
     public const string SpStar2 = "ResImages/star2";
 
     #endregion
+
+    #region TaskReward
+    public const string TaskItemPrefab = "PrefabUI/ItemTask";
+#endregion
 
     #region AutoGuide
     public const string TaskHead = "ResImages/task";

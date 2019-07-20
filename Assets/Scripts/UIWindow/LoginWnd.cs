@@ -17,6 +17,9 @@ public class LoginWnd : WindowRoot
     public Button btnEnter;
     public Button btnNotice;
 
+    public Toggle innerPort;
+    public Toggle outPort;
+
     protected override void InitWnd()
     {
         base.InitWnd();
@@ -73,5 +76,14 @@ public class LoginWnd : WindowRoot
     {
         audioSvc.PlayUIAudio(Constants.UIClickBtn);
         GameRoot.AddTips("功能正在开发中...");
+    }
+
+    public void ToggleOnValueChanged(bool isInner)
+    {
+        if (netSvc.isInner != innerPort.isOn)
+        {
+            netSvc.isInner = innerPort.isOn;
+            netSvc.InitSvc();
+        }
     }
 }

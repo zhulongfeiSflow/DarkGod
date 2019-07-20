@@ -11,8 +11,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class MainCityWnd : WindowRoot
-{
+public class MainCityWnd : WindowRoot {
     #region UIDefine
     public Image imgTouch;
     public Image imgDirBg;
@@ -44,8 +43,7 @@ public class MainCityWnd : WindowRoot
     private AutoGuideCfg curtTaskData;
 
     #region MainFunctions
-    protected override void InitWnd()
-    {
+    protected override void InitWnd() {
         base.InitWnd();
         pointDis = Screen.height * 1.0f / Constants.ScreenStandardHeght * Constants.ScreenOPDis;
         defaultPos = imgDirBg.transform.position;
@@ -56,8 +54,7 @@ public class MainCityWnd : WindowRoot
         RefreshUI();
     }
 
-    public void RefreshUI()
-    {
+    public void RefreshUI() {
         PlayerData pd = GameRoot.Instance.PlayerData;
         SetText(txtFight, PECommon.GetFightByProps(pd));
         SetText(txtPower, "体力:" + pd.power + "/" + PECommon.GetPowerLimit(pd.lv));
@@ -78,42 +75,34 @@ public class MainCityWnd : WindowRoot
 
         grid.cellSize = new Vector2(width, 7);
 
-        for (int i = 0; i < expPrgTrans.childCount; i++)
-        {
+        for (int i = 0; i < expPrgTrans.childCount; i++) {
             Image img = expPrgTrans.GetChild(i).GetComponent<Image>();
-            if (i < index)
-            {
+            if (i < index) {
                 img.fillAmount = 1;
             }
-            else if (i == index)
-            {
+            else if (i == index) {
                 img.fillAmount = expPrgVal % 10 * 1.0f / 10;
             }
-            else
-            {
+            else {
                 img.fillAmount = 0;
             }
         }
         #endregion
 
         //设置自动任务图标
-        curtTaskData = resSvc.GetAutoGuideData(pd.guideid);
-        if (curtTaskData != null)
-        {
+        curtTaskData = resSvc.GetAutoGuideCfg(pd.guideid);
+        if (curtTaskData != null) {
             SetGuidBtnIcon(curtTaskData.npcID);
         }
-        else
-        {
+        else {
             SetGuidBtnIcon(-1);
 
         }
     }
 
-    private void SetGuidBtnIcon(int npcId)
-    {
+    private void SetGuidBtnIcon(int npcId) {
         string spPath = "";
-        switch (npcId)
-        {
+        switch (npcId) {
             case Constants.NPCWiseMan:
                 spPath = PathDefine.WiseManHead;
                 break;
@@ -137,53 +126,68 @@ public class MainCityWnd : WindowRoot
     #endregion
 
     #region ClickEvents
+    public void ClickFubenBtn() {
+        audioSvc.PlayUIAudio(Constants.UIOpenPage);
+        MainCitySys.Instance.EnterFuben();
+    }
 
-    public void ClickStrongBtn()
-    {
+    public void ClickTaskBtn() {
+        audioSvc.PlayUIAudio(Constants.UIOpenPage);
+        MainCitySys.Instance.OpenTaskRewardWnd();
+    }
+
+    public void ClickBuyPowerBtn() {
+        audioSvc.PlayUIAudio(Constants.UIOpenPage);
+        MainCitySys.Instance.OpenBuyWnd(0);
+    }
+
+    public void ClickMKCoinBtn() {
+        audioSvc.PlayUIAudio(Constants.UIOpenPage);
+        MainCitySys.Instance.OpenBuyWnd(1);
+    }
+
+    public void ClickStrongBtn() {
         audioSvc.PlayUIAudio(Constants.UIOpenPage);
         MainCitySys.Instance.OpenStrongWnd();
     }
 
-    public void ClickGuideBtn()
-    {
+    public void ClickGuideBtn() {
         audioSvc.PlayUIAudio(Constants.UIClickBtn);
 
-        if (curtTaskData != null)
-        {
+        if (curtTaskData != null) {
             MainCitySys.Instance.RunTask(curtTaskData);
         }
-        else
-        {
+        else {
             GameRoot.AddTips("更多引导任务，正在开发当中...");
         }
     }
 
-    public void ClickMenuBtn()
-    {
+    public void ClickMenuBtn() {
         audioSvc.PlayUIAudio(Constants.UIExtenBtn);
 
         menuState = !menuState;
         AnimationClip clip = null;
-        if (menuState)
-        {
+        if (menuState) {
             clip = menuAni.GetClip("OpenMCMenu");
         }
-        else
-        {
+        else {
             clip = menuAni.GetClip("CloseMCMenu");
         }
         menuAni.Play(clip.name);
 
     }
 
-    public void ClickHeadBtn()
-    {
+    public void ClickHeadBtn() {
         audioSvc.PlayUIAudio(Constants.UIOpenPage);
         MainCitySys.Instance.OpenInfoWnd();
     }
 
-    public void RegisterTouchEvts()
-    {
+    public void ClickChatBtn() {
+        audioSvc.PlayUIAudio(Constants.UIOpenPage);
+        MainCitySys.Instance.OpenChatWnd();
+    }
+
+    public void RegisterTouchEvts() {
         OnClickDown(imgTouch.gameObject, (PointerEventData evt) =>
         {
             startPos = evt.position;
@@ -203,13 +207,11 @@ public class MainCityWnd : WindowRoot
         {
             Vector2 dir = evt.position - startPos;
             float len = dir.magnitude;
-            if (len > pointDis)
-            {
+            if (len > pointDis) {
                 Vector2 clampDir = Vector2.ClampMagnitude(dir, pointDis);
                 imgDirPoint.transform.position = startPos + clampDir;
             }
-            else
-            {
+            else {
                 imgDirPoint.transform.position = evt.position;
             }
             MainCitySys.Instance.SetMoveDir(dir.normalized);

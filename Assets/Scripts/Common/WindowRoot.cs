@@ -16,6 +16,7 @@ public class WindowRoot : MonoBehaviour
     protected ResSvc resSvc = null;
     protected AudioSvc audioSvc = null;
     protected NetSvc netSvc = null;
+    protected TimerSvc timerSvc = null;
 
     public void SetWndState(bool isActive = true)
     {
@@ -34,11 +35,17 @@ public class WindowRoot : MonoBehaviour
         }
     }
 
+    public bool GetWndSatate()
+    {
+        return gameObject.activeSelf;
+    }
+
     protected virtual void InitWnd()
     {
         resSvc = ResSvc.Instance;
         audioSvc = AudioSvc.Instance;
         netSvc = NetSvc.Instance;
+        timerSvc = TimerSvc.Instance;
     }
 
     protected virtual void ClearWnd()
@@ -46,6 +53,7 @@ public class WindowRoot : MonoBehaviour
         resSvc = null;
         audioSvc = null;
         netSvc = null;
+        timerSvc = null;
     }
 
     #region Tool Function
@@ -113,6 +121,17 @@ public class WindowRoot : MonoBehaviour
             t = go.AddComponent<T>();
         }
         return t;
+    }
+
+    protected Transform GetTrans(Transform trans, string name) {
+        if (trans!=null)
+        {
+            return trans.Find(name);
+        } 
+        else
+        {
+            return transform.Find(name);
+        }
     }
 
     #endregion

@@ -152,7 +152,7 @@ public class StrongWnd : WindowRoot
         SetText(propHurt1, "伤害 +" + sumAddHurt);
         SetText(propDef1, "防御 +" + sumAddDef);
 
-        nextSd = resSvc.GetStrongData(currentIndex, nextStarLv);
+        nextSd = resSvc.GetStrongCfg(currentIndex, nextStarLv);
         if (nextSd != null)
         {
             IsShowUpgradePanel(true);

@@ -10,15 +10,13 @@ using PEProtocol;
 using UnityEngine;
 using System;
 
-public class GameRoot : MonoBehaviour
-{
+public class GameRoot : MonoBehaviour {
     public static GameRoot Instance = null;
 
     public LoadingWnd loadingWnd;
     public DynamicWnd dynamicWnd;
 
-    private void Start()
-    {
+    private void Start() {
         Instance = this;
         DontDestroyOnLoad(this);
         PECommon.Log("Game Start...");
@@ -28,41 +26,45 @@ public class GameRoot : MonoBehaviour
         Init();
     }
 
-    private void ClearUIRoot()
-    {
+    private void ClearUIRoot() {
         Transform canvas = transform.Find("Canvas");
 
-        for (int i = 0; i < canvas.childCount; i++)
-        {
+        for (int i = 0; i < canvas.childCount; i++) {
             canvas.GetChild(i).gameObject.SetActive(false);
         }
 
         dynamicWnd.SetWndState(true);
     }
 
-    private void Init()
-    {
+    private void Init() {
         //服务器模块初始化
         NetSvc net = GetComponent<NetSvc>();
         net.InitSvc();
-
         ResSvc res = GetComponent<ResSvc>();
         res.InitSvc();
         AudioSvc audio = GetComponent<AudioSvc>();
         audio.InitSvc();
+        TimerSvc timerSvc = GetComponent<TimerSvc>();
+        timerSvc.InitSvc();
 
         //业务系统初始化
         LoginSys login = GetComponent<LoginSys>();
         login.InitSys();
         MainCitySys mainCitySys = GetComponent<MainCitySys>();
         mainCitySys.InitSys();
+        FubenSys fubenSys = GetComponent<FubenSys>();
+        fubenSys.InitSys();
 
         //进入登录场景并加载相应的UI
         login.EnterLogin();
+
+        TimerSvc.Instance.AddTimeTask((int tid) =>
+        {
+            PECommon.Log("TEST Timer");
+        }, 1000);
     }
 
-    public static void AddTips(string tips)
-    {
+    public static void AddTips(string tips) {
         Instance.dynamicWnd.AddTip(tips);
     }
 
@@ -74,18 +76,15 @@ public class GameRoot : MonoBehaviour
 
     }
 
-    public void SetPlayerData(RspLogin data)
-    {
+    public void SetPlayerData(RspLogin data) {
         playerData = data.playerData;
     }
 
-    public void SetPlayerName(string name)
-    {
+    public void SetPlayerName(string name) {
         PlayerData.name = name;
     }
 
-    public void SetPlayerDataByGuide(RspGuide data)
-    {
+    public void SetPlayerDataByGuide(RspGuide data) {
         PlayerData.coin = data.coin;
         PlayerData.lv = data.lv;
         PlayerData.exp = data.exp;
@@ -93,8 +92,7 @@ public class GameRoot : MonoBehaviour
 
     }
 
-    public void SetPlayerDataByRspStrong(RspStrong data)
-    {
+    public void SetPlayerDataByRspStrong(RspStrong data) {
         PlayerData.coin = data.coin;
         PlayerData.crystal = data.crystal;
         PlayerData.hp = data.hp;
@@ -105,5 +103,26 @@ public class GameRoot : MonoBehaviour
 
         PlayerData.strongArr = data.strongArr;
 
+    }
+
+    public void SetPlayerDataByBuy(RspBuy data) {
+        PlayerData.diamond = data.diamond;
+        PlayerData.coin = data.coin;
+        PlayerData.power = data.power;
+    }
+
+    public void SetPlayerDataByPower(PshPower data) {
+        PlayerData.power = data.power;
+    }
+
+    public void SetPlayerDataByTask(RspTakeTaskReward data) {
+        PlayerData.coin = data.coin;
+        PlayerData.lv = data.lv;
+        PlayerData.exp = data.exp;
+        PlayerData.taskArr = data.taskArr;
+    }
+
+    public void SetPlayerDataByTaskPsh(PshTaskPrgs data) {
+        PlayerData.taskArr = data.taskArr;
     }
 }

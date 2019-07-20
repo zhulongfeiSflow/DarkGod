@@ -7,7 +7,6 @@
 *****************************************************/
 
 using PEProtocol;
-using UnityEngine;
 
 public class LoginSys : SystemRoot
 {
