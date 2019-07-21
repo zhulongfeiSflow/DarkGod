@@ -8,6 +8,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -23,7 +24,16 @@ public class ResSvc : MonoBehaviour {
         InitStrongCfg(PathDefine.StrongCfg);
         InitTaskRewardCfg(PathDefine.TaskCfg);
 
+        InitSkillCfg(PathDefine.SkillCfg);
+        InitSkillMoveCfg(PathDefine.SkillMoveCfg);
         PECommon.Log("Init ResSvc...");
+    }
+
+    public void ResetSkillCfgs() {//动态测试技能效果
+        return;
+        InitSkillCfg(PathDefine.SkillCfg);
+        InitSkillMoveCfg(PathDefine.SkillMoveCfg);
+        PECommon.Log("Reset SkillCfgs...");
     }
 
     private Action prgCB = null;
@@ -210,54 +220,6 @@ public class ResSvc : MonoBehaviour {
     }
     #endregion
 
-    #region 自动引导配置
-    private Dictionary<int, AutoGuideCfg> guideTaskDic = new Dictionary<int, AutoGuideCfg>();
-    private void InitGuideCfg(string path) {
-        XmlNodeList nodList = null;
-        if (TryGetRootNodeList(path, out nodList)) {
-            for (int i = 0; i < nodList.Count; i++) {
-                XmlElement ele = nodList[i] as XmlElement;
-
-                if (ele.GetAttributeNode("ID") == null) {
-                    continue;
-                }
-                int ID = Convert.ToInt32(ele.GetAttributeNode("ID").InnerText);
-
-                AutoGuideCfg agc = new AutoGuideCfg() { ID = ID };
-
-                foreach (XmlElement e in nodList[i].ChildNodes) {
-                    switch (e.Name) {
-                        case "npcID":
-                            agc.npcID = int.Parse(e.InnerText);
-                            break;
-                        case "dilogArr":
-                            agc.dilogArr = e.InnerText;
-                            break;
-                        case "actID":
-                            agc.actID = int.Parse(e.InnerText);
-                            break;
-                        case "coin":
-                            agc.coin = int.Parse(e.InnerText);
-                            break;
-                        case "exp":
-                            agc.exp = int.Parse(e.InnerText);
-                            break;
-                    }
-                }
-                guideTaskDic.Add(ID, agc);
-            }
-        }
-    }
-
-    public AutoGuideCfg GetAutoGuideCfg(int id) {
-        AutoGuideCfg agc = null;
-        if (guideTaskDic.TryGetValue(id, out agc)) {
-            return agc;
-        }
-        return null;
-    }
-    #endregion
-
     #region 强化升级配置
     private Dictionary<int, Dictionary<int, StrongCfg>> strongDic = new Dictionary<int, Dictionary<int, StrongCfg>>();
     private void InitStrongCfg(string path) {
@@ -394,6 +356,146 @@ public class ResSvc : MonoBehaviour {
         TaskRewardCfg trc = null;
         if (taskRewardCfgDic.TryGetValue(id, out trc)) {
             return trc;
+        }
+        return null;
+    }
+    #endregion
+
+    #region 自动引导配置
+    private Dictionary<int, AutoGuideCfg> guideTaskDic = new Dictionary<int, AutoGuideCfg>();
+    private void InitGuideCfg(string path) {
+        XmlNodeList nodList = null;
+        if (TryGetRootNodeList(path, out nodList)) {
+            for (int i = 0; i < nodList.Count; i++) {
+                XmlElement ele = nodList[i] as XmlElement;
+
+                if (ele.GetAttributeNode("ID") == null) {
+                    continue;
+                }
+                int ID = Convert.ToInt32(ele.GetAttributeNode("ID").InnerText);
+
+                AutoGuideCfg agc = new AutoGuideCfg() { ID = ID };
+
+                foreach (XmlElement e in nodList[i].ChildNodes) {
+                    switch (e.Name) {
+                        case "npcID":
+                            agc.npcID = int.Parse(e.InnerText);
+                            break;
+                        case "dilogArr":
+                            agc.dilogArr = e.InnerText;
+                            break;
+                        case "actID":
+                            agc.actID = int.Parse(e.InnerText);
+                            break;
+                        case "coin":
+                            agc.coin = int.Parse(e.InnerText);
+                            break;
+                        case "exp":
+                            agc.exp = int.Parse(e.InnerText);
+                            break;
+                    }
+                }
+                guideTaskDic.Add(ID, agc);
+            }
+        }
+    }
+
+    public AutoGuideCfg GetAutoGuideCfg(int id) {
+        AutoGuideCfg agc = null;
+        if (guideTaskDic.TryGetValue(id, out agc)) {
+            return agc;
+        }
+        return null;
+    }
+    #endregion
+
+    #region 技能特效配置
+    private Dictionary<int, SkillCfg> skillDic = new Dictionary<int, SkillCfg>();
+    private void InitSkillCfg(string path) {
+        skillDic.Clear();
+        XmlNodeList nodList = null;
+        if (TryGetRootNodeList(path, out nodList)) {
+            for (int i = 0; i < nodList.Count; i++) {
+                XmlElement ele = nodList[i] as XmlElement;
+
+                if (ele.GetAttributeNode("ID") == null) {
+                    continue;
+                }
+                int ID = Convert.ToInt32(ele.GetAttributeNode("ID").InnerText);
+
+                SkillCfg sc = new SkillCfg() { ID = ID };
+
+                foreach (XmlElement e in nodList[i].ChildNodes) {
+                    switch (e.Name) {
+                        case "skillName":
+                            sc.skillName = e.InnerText;
+                            break;
+                        case "skillTime":
+                            sc.skillTime = int.Parse(e.InnerText);
+                            break;
+                        case "aniAction":
+                            sc.aniAction = int.Parse(e.InnerText);
+                            break;
+                        case "fx":
+                            sc.fx = e.InnerText;
+                            break;
+                        case "skillMoveLst":
+                            sc.skillMoveLst = e.InnerText.Trim().Split('|').ToList();
+                            break;
+                    }
+                }
+                skillDic.Add(ID, sc);
+            }
+        }
+    }
+
+    public SkillCfg GetSkillCfg(int id) {
+        SkillCfg sc = null;
+        if (skillDic.TryGetValue(id, out sc)) {
+            return sc;
+        }
+        return null;
+    }
+    #endregion
+
+    #region 技能移动配置
+    private Dictionary<int, SkillMoveCfg> skillMoveDic = new Dictionary<int, SkillMoveCfg>();
+    private void InitSkillMoveCfg(string path) {
+        skillMoveDic.Clear();
+        XmlNodeList nodList = null;
+        if (TryGetRootNodeList(path, out nodList)) {
+            for (int i = 0; i < nodList.Count; i++) {
+                XmlElement ele = nodList[i] as XmlElement;
+
+                if (ele.GetAttributeNode("ID") == null) {
+                    continue;
+                }
+                int ID = Convert.ToInt32(ele.GetAttributeNode("ID").InnerText);
+
+                SkillMoveCfg smc = new SkillMoveCfg() { ID = ID };
+
+                foreach (XmlElement e in nodList[i].ChildNodes) {
+                    switch (e.Name) {
+                        case "delayTime":
+                            smc.delayTime = int.Parse(e.InnerText);
+                            break;
+                        case "moveTime":
+                            smc.moveTime = int.Parse(e.InnerText);
+                            break;
+                        case "moveDis":
+                            smc.moveDis = float.Parse(e.InnerText);
+                            break;
+                    }
+                }
+                skillMoveDic.Add(ID, smc);
+            }
+        }
+    }
+
+    public SkillMoveCfg GetSkillMoveCfg(int id) {
+        SkillMoveCfg smc = null;
+        if (skillMoveDic.TryGetValue(id, out smc)) {
+            return smc;
         }
         return null;
     }

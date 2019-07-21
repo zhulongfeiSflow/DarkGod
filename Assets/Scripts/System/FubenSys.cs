@@ -6,7 +6,10 @@
 	功能：副本业务系统
 *****************************************************/
 
-public class FubenSys : SystemRoot {
+using PEProtocol;
+
+public class FubenSys : SystemRoot
+{
     public static FubenSys Instance = null;
 
     public FubenWnd fubenWnd;
@@ -19,13 +22,20 @@ public class FubenSys : SystemRoot {
     }
 
     public void EnterFuben() {
-        OpenFubenWnd();
+        SetFubenWndState();
     }
 
     #region Fuben Wnd
-    public void OpenFubenWnd() {
-        fubenWnd.SetWndState(true);
+    public void SetFubenWndState(bool isActive = true) {
+        fubenWnd.SetWndState(isActive);
     }
     #endregion
+
+    public void RspFBFight(GameMsg msg) {
+        GameRoot.Instance.SetPlayerDataByFBStart(msg.rspFBFight);
+        MainCitySys.Instance.mainCityWnd.SetWndState(false);
+        SetFubenWndState(false);
+        BattleSys.Instance.StartBattle(msg.rspFBFight.fbid);
+    }
 
 }

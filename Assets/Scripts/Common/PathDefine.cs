@@ -13,6 +13,9 @@ public class PathDefine {
     public const string GuideCfg = "ResCfgs/guide";
     public const string StrongCfg = "ResCfgs/strong";
     public const string TaskCfg = "ResCfgs/taskreward";
+
+    public const string SkillCfg = "ResCfgs/skill";
+    public const string SkillMoveCfg = "ResCfgs/skillmove";
     #endregion
 
     #region chat
@@ -58,5 +61,6 @@ public class PathDefine {
 
     #region Player
     public const string AssassinCityPlayerPrefab = "PrefabPlayer/AssassinCity";
+    public const string AssassinBattlePlayerPrefab = "PrefabPlayer/AssassinBattle";
     #endregion
 }

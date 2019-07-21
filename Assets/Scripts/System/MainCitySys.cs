@@ -85,7 +85,7 @@ public class MainCitySys : SystemRoot {
             playerCtrl.SetBlend(Constants.BlendIdle);
         }
         else {
-            playerCtrl.SetBlend(Constants.BlendWalk);
+            playerCtrl.SetBlend(Constants.BlendMove);
         }
 
         playerCtrl.Dir = dir;
@@ -243,7 +243,7 @@ public class MainCitySys : SystemRoot {
                 nav.enabled = true;
                 nav.speed = Constants.PlayerMoveSpeed;
                 nav.SetDestination(dest);
-                playerCtrl.SetBlend(Constants.BlendWalk);
+                playerCtrl.SetBlend(Constants.BlendMove);
             }
         }
         else {

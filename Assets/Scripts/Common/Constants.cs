@@ -17,6 +17,7 @@ public enum TxtColor
 
 public class Constants
 {
+    #region 字体上色
     private const string ColorRed = "<color=#FF0000FF>";
     private const string ColorGreen = "<color=#00FF00FF>";
     private const string ColorBlue = "<color=#00B4FFFF>";
@@ -43,6 +44,7 @@ public class Constants
         }
         return result;
     }
+    #endregion
 
     //AutoGuideNpc
     public const int NPCWiseMan = 0;
@@ -58,6 +60,7 @@ public class Constants
     //音效名字
     public const string BGLogin = "bgLogin";
     public const string BGMainCity = "bgMainCity";
+    public const string BGHuangYe = "bgHuangYe";
 
     //登录按钮音效
     public const string UILoginBtn = "uiLoginBtn";
@@ -73,10 +76,13 @@ public class Constants
     public const int ScreenStandardHeght = 750;
     //摇杆点标准焦距
     public const int ScreenOPDis = 90;
+    
+    //Action触发参数
+    public const int ActionDefault = -1;
 
-    //屏幕参数
+    //混合参数
     public const int BlendIdle = 0;
-    public const int BlendWalk = 1;
+    public const int BlendMove = 1;
 
     //角色移动速度
     public const int PlayerMoveSpeed = 8;

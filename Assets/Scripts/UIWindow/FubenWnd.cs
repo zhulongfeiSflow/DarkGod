@@ -55,7 +55,10 @@ public class FubenWnd : WindowRoot {
             GameRoot.AddTips("体力值不足");
         }
         else {
-            //TODO
+            netSvc.SendMsg(new GameMsg {
+                cmd = (int)CMD.ReqFBFight,
+                reqFBFight = new ReqFBFight { fbid = fbid }
+            });
         }
     }
 }

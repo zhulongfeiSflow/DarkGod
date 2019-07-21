@@ -5,10 +5,27 @@
 	日期：2019/07/14 17:42   	
 	功能：配置数据类
 *****************************************************/
+using System.Collections.Generic;
 using UnityEngine;
 
+public class SkillMoveCfg : BaseData<SkillMoveCfg>
+{
+    public int delayTime;
+    public int moveTime;
+    public float moveDis;
+}
 
-public class StrongCfg : BaseData<StrongCfg> {
+public class SkillCfg : BaseData<SkillCfg>
+{
+    public string skillName;
+    public int skillTime;
+    public int aniAction;
+    public string fx;
+    public List<string> skillMoveLst;
+}
+
+public class StrongCfg : BaseData<StrongCfg>
+{
     public int pos;
     public int starlv;
     public int addhp;
