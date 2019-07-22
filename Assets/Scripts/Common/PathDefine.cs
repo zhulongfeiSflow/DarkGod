@@ -10,12 +10,14 @@ public class PathDefine {
     #region Configs
     public const string RDNameCfg = "ResCfgs/rdname";
     public const string MapCfg = "ResCfgs/map";
+    public const string MonsterCfg = "ResCfgs/monster";
     public const string GuideCfg = "ResCfgs/guide";
     public const string StrongCfg = "ResCfgs/strong";
     public const string TaskCfg = "ResCfgs/taskreward";
 
     public const string SkillCfg = "ResCfgs/skill";
     public const string SkillMoveCfg = "ResCfgs/skillmove";
+    public const string SkillActionCfg = "ResCfgs/skillaction";
     #endregion
 
     #region chat

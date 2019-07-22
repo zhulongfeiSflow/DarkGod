@@ -15,6 +15,14 @@ public enum TxtColor
     Yellow,
 }
 
+public enum DamageType
+{
+    None,
+    AD = 1,
+    AP = 2,
+}
+
+
 public class Constants
 {
     #region 字体上色
@@ -24,11 +32,9 @@ public class Constants
     private const string ColorYellow = "<color=#FFFF00FF>";
     private const string ColorEnd = "</color>";
 
-    public static string Color(string str, TxtColor c)
-    {
+    public static string Color(string str, TxtColor c) {
         string result = "";
-        switch (c)
-        {
+        switch (c) {
             case TxtColor.Red:
                 result = ColorRed + str + ColorEnd;
                 break;
@@ -76,9 +82,15 @@ public class Constants
     public const int ScreenStandardHeght = 750;
     //摇杆点标准焦距
     public const int ScreenOPDis = 90;
-    
+
     //Action触发参数
     public const int ActionDefault = -1;
+    public const int ActionBorn = 0;
+    public const int ActionDie = 100;
+    public const int ActionHit = 101;
+
+    public const int DieAniLenght = 5000;
+
 
     //混合参数
     public const int BlendIdle = 0;

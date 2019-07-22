@@ -19,6 +19,34 @@ public abstract class EntityBase
 
     public bool canControl = true;
 
+    private BattleProps props;
+    public BattleProps Props {
+        get {
+            return props;
+        }
+
+        protected set {
+            props = value;
+        }
+    }
+
+    private int hp;
+    public int HP {
+        get {
+            return hp;
+        }
+
+        set {
+            //通知UI血量变化
+            PECommon.Log("hp change" + hp + "to" + value);
+            hp = value;
+        }
+    }
+
+    public void Born() {
+        stateMgr.ChangeStatus(this, AniState.Born, null);
+    }
+
     public void Move() {
         stateMgr.ChangeStatus(this, AniState.Move, null);
     }
@@ -29,6 +57,19 @@ public abstract class EntityBase
 
     public void Attack(int skillID) {
         stateMgr.ChangeStatus(this, AniState.Attack, skillID);
+    }
+
+    public void Hit() {
+        stateMgr.ChangeStatus(this, AniState.Hit, null);
+    }
+
+    public void Die() {
+        stateMgr.ChangeStatus(this, AniState.Die, null);
+    }
+
+    public virtual void SetBattleProps(BattleProps props) {
+        HP = props.hp;
+        Props = props;
     }
 
     public virtual void SetBlend(float blend) {
@@ -61,12 +102,21 @@ public abstract class EntityBase
         }
     }
 
-    public virtual void AttackEffect(int skillID) {
-        skillMgr.AttackEffect(this, skillID);
+    public virtual void SkillAttack(int skillID) {
+        skillMgr.SkillAttack(this, skillID);
     }
 
     public virtual Vector2 GetDirInput() {
         return Vector2.zero;
     }
+
+    public virtual Vector3 GetPos() {
+        return controller.transform.position;
+    }
+
+    public virtual Transform GetTrans() {
+        return controller.transform;
+    }
+
 
 }

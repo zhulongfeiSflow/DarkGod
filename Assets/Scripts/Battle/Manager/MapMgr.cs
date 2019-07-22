@@ -10,9 +10,16 @@ using UnityEngine;
 
 public class MapMgr : MonoBehaviour
 {
-    public void Init() {
+    private int waveIndex = 1;//默认第一批怪物
+    private BattleMgr battleMgr;
+
+    public void Init(BattleMgr bm) {
+        battleMgr = bm;
         transform.localPosition = Vector3.zero;
         transform.localScale = Vector3.one;
+
+        //实例化第一批怪物
+        battleMgr.LoadMonsterByWaveID(waveIndex);
 
         PECommon.Log("Init MapMgr Done.");
     }

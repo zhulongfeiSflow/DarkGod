@@ -6,6 +6,9 @@
 	功能：战场管理器
 *****************************************************/
 
+using PEProtocol;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BattleMgr : MonoBehaviour
@@ -18,6 +21,9 @@ public class BattleMgr : MonoBehaviour
     private MapMgr mapMgr;
 
     public EntityPlayer entitySelfPlayer;
+    private MapCfg mapCfg;
+
+    private Dictionary<string, EntityMonster> monsterDic = new Dictionary<string, EntityMonster>();
 
     public void Init(int mapid) {
         resSvc = ResSvc.Instance;
@@ -30,19 +36,22 @@ public class BattleMgr : MonoBehaviour
         skillMgr.Init();
 
         //加载战斗地图
-        MapCfg mapData = resSvc.GetMapCfgData(mapid);
-        resSvc.AsyncLoadScene(mapData.sceneName, () =>
+        mapCfg = resSvc.GetMapCfgData(mapid);
+        resSvc.AsyncLoadScene(mapCfg.sceneName, () =>
         {
             //初始化地图数据
-
             GameObject map = GameObject.FindGameObjectWithTag("MapRoot");
             mapMgr = map.transform.GetComponent<MapMgr>();
-            mapMgr.Init();
+            mapMgr.Init(this);
 
-            Camera.main.transform.position = mapData.mainCamPos;
-            Camera.main.transform.localEulerAngles = mapData.mainCamRote;
+            Camera.main.transform.position = mapCfg.mainCamPos;
+            Camera.main.transform.localEulerAngles = mapCfg.mainCamRote;
 
-            LoadPlayer(mapData);
+            LoadPlayer(mapCfg);
+            entitySelfPlayer.Idle();
+
+            //延迟激活第一批怪物
+            ActiveCurrentBatchMonster();
 
             audioSvc.PlayBGMusic(Constants.BGHuangYe);
         });
@@ -54,21 +63,80 @@ public class BattleMgr : MonoBehaviour
         player.transform.localEulerAngles = mapData.playerBornRote;
         player.transform.localScale = Vector3.one;
 
-        PlayerController playerCtrl
-            = player.GetComponent<PlayerController>();
-        playerCtrl.Init();
+        PlayerData pd = GameRoot.Instance.PlayerData;
+        BattleProps props = new BattleProps {
+            hp = pd.hp,
+            ad = pd.ad,
+            ap = pd.ap,
+            addef = pd.addef,
+            apdef = pd.apdef,
+            dodge = pd.dodge,
+            pierce = pd.pierce,
+            critical = pd.critical,
+        };
 
         entitySelfPlayer = new EntityPlayer {
             battleMgr = this,
             stateMgr = stateMgr,
-            controller = playerCtrl,
             skillMgr = skillMgr,
         };
+        entitySelfPlayer.SetBattleProps(props);
 
-        entitySelfPlayer.Idle();
-
+        PlayerController playerCtrl = player.GetComponent<PlayerController>();
+        playerCtrl.Init();
+        entitySelfPlayer.controller = playerCtrl;
     }
 
+    public void LoadMonsterByWaveID(int wave) {
+        for (int i = 0; i < mapCfg.monsterLst.Count; i++) {
+            MonsterData md = mapCfg.monsterLst[i];
+            if (md.mWave == wave) {
+                GameObject monstePref = resSvc.LoadPrefab(md.mCfg.resPath, true);
+                monstePref.transform.localPosition = md.mBornPos;
+                monstePref.transform.localEulerAngles = md.mBornRote;
+                monstePref.transform.localScale = Vector3.one;
+
+                monstePref.name = md.mCfg.mName + md.mWave + "_" + md.mIndex;
+
+                EntityMonster monsterEntity = new EntityMonster {
+                    battleMgr = this,
+                    stateMgr = stateMgr,
+                    skillMgr = skillMgr,
+                };
+                monsterEntity.md = md;
+                monsterEntity.SetBattleProps(md.mCfg.bps);
+
+                MonsterController mc = monstePref.GetComponent<MonsterController>();
+                mc.Init();
+                monsterEntity.controller = mc;
+
+                monstePref.SetActive(false);
+
+                monsterDic.Add(monstePref.name, monsterEntity);
+            }
+        }
+    }
+
+    public void ActiveCurrentBatchMonster() {
+        TimerSvc.Instance.AddTimeTask((int tid) =>
+        {
+            foreach (var item in monsterDic.Values) {
+                item.controller.gameObject.SetActive(true);
+                item.Born();
+                TimerSvc.Instance.AddTimeTask((int id) =>
+                {
+                    //出生一秒后进入Idle
+                    item.Idle();
+                }, 1000);
+            }
+        }, 500);
+    }
+
+    public List<EntityMonster> GetEntityMonster() {
+        return monsterDic.Values.ToList();
+    }
+
+    #region 技能释放于角色控制
     public void SetSelfPlayerMoveDir(Vector2 dir) {
         //设置玩家移动
         //PECommon.Log(dir.ToString());
@@ -123,5 +191,8 @@ public class BattleMgr : MonoBehaviour
     public Vector2 GetDirInput() {
         return BattleSys.Instance.GetDirInput();
     }
+    #endregion
+
+
 
 }

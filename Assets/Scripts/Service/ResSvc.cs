@@ -13,24 +13,29 @@ using System.Xml;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ResSvc : MonoBehaviour {
+public class ResSvc : MonoBehaviour
+{
     public static ResSvc Instance = null;
 
     public void InitSvc() {
         Instance = this;
         InitRDNameCfg(PathDefine.RDNameCfg);
+
+        InitMonsterCfg(PathDefine.MonsterCfg);
         InitMapCfg(PathDefine.MapCfg);
+
         InitGuideCfg(PathDefine.GuideCfg);
         InitStrongCfg(PathDefine.StrongCfg);
         InitTaskRewardCfg(PathDefine.TaskCfg);
 
         InitSkillCfg(PathDefine.SkillCfg);
         InitSkillMoveCfg(PathDefine.SkillMoveCfg);
+        InitSkillActionCfg(PathDefine.SkillActionCfg);
         PECommon.Log("Init ResSvc...");
     }
 
     public void ResetSkillCfgs() {//动态测试技能效果
-        return;
+        //return;
         InitSkillCfg(PathDefine.SkillCfg);
         InitSkillMoveCfg(PathDefine.SkillMoveCfg);
         PECommon.Log("Reset SkillCfgs...");
@@ -179,7 +184,7 @@ public class ResSvc : MonoBehaviour {
                 }
                 int ID = Convert.ToInt32(ele.GetAttributeNode("ID").InnerText);
 
-                MapCfg mc = new MapCfg() { ID = ID };
+                MapCfg mc = new MapCfg() { ID = ID, monsterLst = new List<MonsterData>(), };
 
                 foreach (XmlElement e in nodList[i].ChildNodes) {
                     switch (e.Name) {
@@ -193,16 +198,43 @@ public class ResSvc : MonoBehaviour {
                             mc.power = int.Parse(e.InnerText);
                             break;
                         case "mainCamPos":
-                            mc.mainCamPos = GetVec3ByString(e.InnerText);
+                            mc.mainCamPos = StrToVec3(e.InnerText);
                             break;
                         case "mainCamRote":
-                            mc.mainCamRote = GetVec3ByString(e.InnerText);
+                            mc.mainCamRote = StrToVec3(e.InnerText);
                             break;
                         case "playerBornPos":
-                            mc.playerBornPos = GetVec3ByString(e.InnerText);
+                            mc.playerBornPos = StrToVec3(e.InnerText);
                             break;
                         case "playerBornRote":
-                            mc.playerBornRote = GetVec3ByString(e.InnerText);
+                            mc.playerBornRote = StrToVec3(e.InnerText);
+                            break;
+                        case "monsterLst": {
+                                string[] valArr = e.InnerText.Trim().Split('#');
+                                for (int waveindex = 0; waveindex < valArr.Length; waveindex++) {
+                                    if (waveindex == 0) {
+                                        continue;
+                                    }
+                                    string[] tempArr = valArr[waveindex].Split('|');
+                                    for (int j = 0; j < tempArr.Length; j++) {
+                                        if (j == 0) {
+                                            continue;
+                                        }
+                                        string[] arr = tempArr[j].Split(',');
+                                        int id = int.Parse(arr[0]);
+                                        MonsterData md = new MonsterData {
+                                            ID = id,
+                                            mWave = waveindex,
+                                            mIndex = j,
+                                            mCfg = GetMonsterCfgData(id),
+                                            mBornPos = new Vector3(float.Parse(arr[1]), float.Parse(arr[2]), float.Parse(arr[3])),
+                                            mBornRote = new Vector3(0, float.Parse(arr[4]), 0),
+                                            mLevel = int.Parse(arr[5]),
+                                        };
+                                        mc.monsterLst.Add(md);
+                                    }
+                                }
+                            }
                             break;
                     }
                 }
@@ -214,6 +246,71 @@ public class ResSvc : MonoBehaviour {
     public MapCfg GetMapCfgData(int id) {
         MapCfg data;
         if (mapCfgDataDic.TryGetValue(id, out data)) {
+            return data;
+        }
+        return null;
+    }
+    #endregion
+
+    #region 怪物
+    private Dictionary<int, MonsterCfg> monsterDic = new Dictionary<int, MonsterCfg>();
+    private void InitMonsterCfg(string path) {
+        XmlNodeList nodList = null;
+        if (TryGetRootNodeList(path, out nodList)) {
+            for (int i = 0; i < nodList.Count; i++) {
+                XmlElement ele = nodList[i] as XmlElement;
+
+                if (ele.GetAttributeNode("ID") == null) {
+                    continue;
+                }
+                int ID = Convert.ToInt32(ele.GetAttributeNode("ID").InnerText);
+
+                MonsterCfg mc = new MonsterCfg() { ID = ID,
+                    bps = new BattleProps(),
+                };
+
+                foreach (XmlElement e in nodList[i].ChildNodes) {
+                    switch (e.Name) {
+                        case "mName":
+                            mc.mName = e.InnerText;
+                            break;
+                        case "resPath":
+                            mc.resPath = e.InnerText;
+                            break;
+                        case "hp":
+                            mc.bps.hp = int.Parse(e.InnerText);
+                            break;
+                        case "ad":
+                            mc.bps.ad = int.Parse(e.InnerText);
+                            break;
+                        case "ap":
+                            mc.bps.ap = int.Parse(e.InnerText);
+                            break;
+                        case "addef":
+                            mc.bps.addef = int.Parse(e.InnerText);
+                            break;
+                        case "apdef":
+                            mc.bps.apdef = int.Parse(e.InnerText);
+                            break;
+                        case "dodge":
+                            mc.bps.dodge = int.Parse(e.InnerText);
+                            break;
+                        case "pierce":
+                            mc.bps.pierce = int.Parse(e.InnerText);
+                            break;
+                        case "critical":
+                            mc.bps.critical = int.Parse(e.InnerText);
+                            break;
+                    }
+                }
+                monsterDic.Add(ID, mc);
+            }
+        }
+    }
+
+    public MonsterCfg GetMonsterCfgData(int id) {
+        MonsterCfg data;
+        if (monsterDic.TryGetValue(id, out data)) {
             return data;
         }
         return null;
@@ -409,7 +506,7 @@ public class ResSvc : MonoBehaviour {
     }
     #endregion
 
-    #region 技能特效配置
+    #region 技能信息配置
     private Dictionary<int, SkillCfg> skillDic = new Dictionary<int, SkillCfg>();
     private void InitSkillCfg(string path) {
         skillDic.Clear();
@@ -439,8 +536,17 @@ public class ResSvc : MonoBehaviour {
                         case "fx":
                             sc.fx = e.InnerText;
                             break;
+                        case "dmgType":
+                            sc.dmgType = (DamageType)int.Parse(e.InnerText);
+                            break;
                         case "skillMoveLst":
-                            sc.skillMoveLst = e.InnerText.Trim().Split('|').ToList();
+                            sc.skillMoveLst = GetSplitList<int>(e.InnerText, '|');
+                            break;
+                        case "skillActionLst":
+                            sc.skillActionLst = GetSplitList<int>(e.InnerText, '|');
+                            break;
+                        case "skillDamageLst":
+                            sc.skillDamageLst = GetSplitList<int>(e.InnerText, '|');
                             break;
                     }
                 }
@@ -501,14 +607,57 @@ public class ResSvc : MonoBehaviour {
     }
     #endregion
 
+    #region 技能伤害范围配置
+    private Dictionary<int, SkillActionCfg> skillActionDic = new Dictionary<int, SkillActionCfg>();
+    private void InitSkillActionCfg(string path) {
+        skillActionDic.Clear();
+        XmlNodeList nodList = null;
+        if (TryGetRootNodeList(path, out nodList)) {
+            for (int i = 0; i < nodList.Count; i++) {
+                XmlElement ele = nodList[i] as XmlElement;
+
+                if (ele.GetAttributeNode("ID") == null) {
+                    continue;
+                }
+                int ID = Convert.ToInt32(ele.GetAttributeNode("ID").InnerText);
+
+                SkillActionCfg sac = new SkillActionCfg() { ID = ID };
+
+                foreach (XmlElement e in nodList[i].ChildNodes) {
+                    switch (e.Name) {
+                        case "delayTime":
+                            sac.delayTime = int.Parse(e.InnerText);
+                            break;
+                        case "radius":
+                            sac.radius = float.Parse(e.InnerText);
+                            break;
+                        case "angle":
+                            sac.angle = int.Parse(e.InnerText);
+                            break;
+                    }
+                }
+                skillActionDic.Add(ID, sac);
+            }
+        }
+    }
+
+    public SkillActionCfg GetSkillActionCfg(int id) {
+        SkillActionCfg sac = null;
+        if (skillActionDic.TryGetValue(id, out sac)) {
+            return sac;
+        }
+        return null;
+    }
+    #endregion
+
     #endregion
 
     #region 字符串转化 
-    public static Vector3 GetVec3ByString(string p_sVec3) {
-        if (p_sVec3.Length <= 0)
+    public static Vector3 StrToVec3(string source) {
+        if (source.Length <= 0)
             return Vector3.zero;
 
-        string[] tmp_sValues = p_sVec3.Trim(' ').Split(',');
+        string[] tmp_sValues = source.Trim(' ').Split(',');
         if (tmp_sValues != null && tmp_sValues.Length == 3) {
             float tmp_fX = float.Parse(tmp_sValues[0]);
             float tmp_fY = float.Parse(tmp_sValues[1]);
@@ -517,6 +666,20 @@ public class ResSvc : MonoBehaviour {
             return new Vector3(tmp_fX, tmp_fY, tmp_fZ);
         }
         return Vector3.zero;
+    }
+
+    public static List<T> GetSplitList<T>(string source, char cha) {
+        var lst = source.Trim().Split(cha);
+        List<T> retlst = new List<T>();
+        foreach (var item in lst) {
+
+            T localVal = default(T);
+            localVal = (T)Convert.ChangeType(item, typeof(T));
+
+            retlst.Add(localVal);
+        }
+
+        return retlst;
     }
     #endregion
 }

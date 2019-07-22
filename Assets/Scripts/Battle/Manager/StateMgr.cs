@@ -14,9 +14,12 @@ public class StateMgr : MonoBehaviour
     private Dictionary<AniState, IState> fsm = new Dictionary<AniState, IState>();
 
     public void Init() {
+        fsm.Add(AniState.Born, new StateBorn());
         fsm.Add(AniState.Idle, new StateIdle());
         fsm.Add(AniState.Move, new StateMove());
         fsm.Add(AniState.Attack, new StateAttack());
+        fsm.Add(AniState.Hit, new StateHit());
+        fsm.Add(AniState.Die, new StateDie());
 
         PECommon.Log("Init StateMgr Done.");
     }

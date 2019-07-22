@@ -3,7 +3,7 @@
 	作者：朱龙飞
     邮箱: 398670608@qq.com
     日期：2019/7/14 12:26:31
-	功能：表现实体角色控制器类
+	功能：主角表现实体角色控制器类
 *****************************************************/
 
 using UnityEngine;
@@ -11,8 +11,6 @@ using UnityEngine;
 public class PlayerController : Controller
 {
     public GameObject daggeratk1fx;
-
-    public CharacterController ctrl;
 
     private Transform camTrans;
     private Vector3 camOffset;
