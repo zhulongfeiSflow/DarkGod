@@ -10,15 +10,15 @@ public class StateMove : IState
 {
     public void Enter(EntityBase entity, params object[] args) {
         entity.currentAniState = AniState.Move;
-        PECommon.Log("Enter move");
+        //PECommon.Log("Enter move");
     }
 
     public void Exit(EntityBase entity, params object[] args) {
-        PECommon.Log("Exit move");
+        //PECommon.Log("Exit move");
     }
 
     public void Process(EntityBase entity, params object[] args) {
-        PECommon.Log("Process move");
+        //PECommon.Log("Process move");
         entity.SetBlend(Constants.BlendMove);
     }
 }

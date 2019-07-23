@@ -79,12 +79,13 @@ public class BattleMgr : MonoBehaviour
             battleMgr = this,
             stateMgr = stateMgr,
             skillMgr = skillMgr,
+            Name = "AssassinBattle",
         };
         entitySelfPlayer.SetBattleProps(props);
 
         PlayerController playerCtrl = player.GetComponent<PlayerController>();
         playerCtrl.Init();
-        entitySelfPlayer.controller = playerCtrl;
+        entitySelfPlayer.SetCtrl(playerCtrl);
     }
 
     public void LoadMonsterByWaveID(int wave) {
@@ -103,16 +104,18 @@ public class BattleMgr : MonoBehaviour
                     stateMgr = stateMgr,
                     skillMgr = skillMgr,
                 };
+                //设置初始属性
                 monsterEntity.md = md;
                 monsterEntity.SetBattleProps(md.mCfg.bps);
+                monsterEntity.Name = monstePref.name;
 
                 MonsterController mc = monstePref.GetComponent<MonsterController>();
                 mc.Init();
-                monsterEntity.controller = mc;
+                monsterEntity.SetCtrl(mc);
 
                 monstePref.SetActive(false);
-
                 monsterDic.Add(monstePref.name, monsterEntity);
+                GameRoot.Instance.dynamicWnd.AddHpItemInfo(monstePref.name, mc.hpRoot, monsterEntity.HP);
             }
         }
     }
@@ -121,7 +124,7 @@ public class BattleMgr : MonoBehaviour
         TimerSvc.Instance.AddTimeTask((int tid) =>
         {
             foreach (var item in monsterDic.Values) {
-                item.controller.gameObject.SetActive(true);
+                item.SetActive(true);
                 item.Born();
                 TimerSvc.Instance.AddTimeTask((int id) =>
                 {
@@ -134,6 +137,13 @@ public class BattleMgr : MonoBehaviour
 
     public List<EntityMonster> GetEntityMonster() {
         return monsterDic.Values.ToList();
+    }
+
+    public void RemoveMonster(string key) {
+        if (monsterDic.ContainsKey(key)) {
+            monsterDic.Remove(key);
+            GameRoot.Instance.dynamicWnd.RemoveHpItemInfo(key);
+        }
     }
 
     #region 技能释放于角色控制
@@ -171,8 +181,32 @@ public class BattleMgr : MonoBehaviour
         }
     }
 
+    private int[] comboArr = new int[] { 111, 112, 113, 114, 115 };
+    public double lastAtkTime = 0;
+    public int comboIndex = 0;
     private void ReleaseNormalAtk() {
-        PECommon.Log("Click Normal Atk");
+        //PECommon.Log("Click Normal Atk");
+        if (entitySelfPlayer.currentAniState == AniState.Attack) {
+            //在500ms以内进行第二次点击,存数据
+            var nowAtkTime = TimerSvc.Instance.GetNowTime();
+            if (nowAtkTime - lastAtkTime < Constants.ComboSpace && lastAtkTime != 0) {
+                if (comboIndex != comboArr.Length - 1) {
+                    comboIndex += 1;
+                    entitySelfPlayer.comboQue.Enqueue(comboArr[comboIndex]);
+                    lastAtkTime = nowAtkTime;
+                }
+                else {
+                    comboIndex = 0;
+                    lastAtkTime = 0;
+                }
+            }
+        }
+        else if (entitySelfPlayer.currentAniState == AniState.Idle ||
+            entitySelfPlayer.currentAniState == AniState.Move) {
+            comboIndex = 0;
+            lastAtkTime = TimerSvc.Instance.GetNowTime();
+            entitySelfPlayer.Attack(comboArr[comboIndex]);
+        }
     }
 
     private void ReleaseSkill1() {
@@ -181,11 +215,13 @@ public class BattleMgr : MonoBehaviour
     }
 
     private void ReleaseSkill2() {
-        PECommon.Log("Click Skill2");
+        //PECommon.Log("Click Skill2");
+        entitySelfPlayer.Attack(102);
     }
 
     private void ReleaseSkill3() {
-        PECommon.Log("Click Skill3");
+        //PECommon.Log("Click Skill3");
+        entitySelfPlayer.Attack(103);
     }
 
     public Vector2 GetDirInput() {

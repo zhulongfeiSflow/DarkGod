@@ -13,6 +13,7 @@ public abstract class Controller : MonoBehaviour
 {
     public Animator ani;
     public CharacterController ctrl;
+    public Transform hpRoot;
 
     protected bool isMove = false;
     private Vector2 dir = Vector2.zero;
@@ -30,6 +31,8 @@ public abstract class Controller : MonoBehaviour
             dir = value;
         }
     }
+
+    protected Transform camTrans;
 
     protected bool skillMove = false;
     protected float skillMoveSpeed = 0f;
@@ -57,5 +60,17 @@ public abstract class Controller : MonoBehaviour
         ) {
         skillMove = move;
         skillMoveSpeed = skillSpeed;
+    }
+
+    public virtual void SetAtkRotationLocal(Vector2 atkDir) {
+        float angle = Vector2.SignedAngle(atkDir, new Vector2(0, 1));
+        Vector3 eulerAngles = new Vector3(0, angle, 0);
+        transform.localEulerAngles = eulerAngles;
+    }
+
+    public virtual void SetAtkRotationCam(Vector2 camDir) {
+        float angle = Vector2.SignedAngle(camDir, new Vector2(0, 1)) + camTrans.eulerAngles.y;
+        Vector3 eulerAngles = new Vector3(0, angle, 0);
+        transform.localEulerAngles = eulerAngles;
     }
 }

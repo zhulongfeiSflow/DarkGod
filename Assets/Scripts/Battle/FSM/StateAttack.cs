@@ -11,19 +11,18 @@ public class StateAttack : IState
 {
     public void Enter(EntityBase entity, params object[] args) {
         entity.currentAniState = AniState.Attack;
-        PECommon.Log("Enter Attack");
+        entity.curtSkillCfg = ResSvc.Instance.GetSkillCfg((int)args[0]);
+        //PECommon.Log("Enter Attack");
     }
 
     public void Exit(EntityBase entity, params object[] args) {
-        entity.canControl = true;
-        entity.SetAction(Constants.ActionDefault);
-        PECommon.Log("Exit Attack");
+        entity.ExitCurtSkill();
+        //PECommon.Log("Exit Attack");
     }
 
     public void Process(EntityBase entity, params object[] args) {
-
         entity.SkillAttack((int)args[0]);
-        PECommon.Log("Process Attack");
+        //PECommon.Log("Process Attack");
     }
 }
 

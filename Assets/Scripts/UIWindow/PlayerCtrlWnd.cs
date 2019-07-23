@@ -41,6 +41,9 @@ public class PlayerCtrlWnd : WindowRoot
         SetActive(imgDirPoint, false);
 
         RegisterTouchEvts();
+        sk1CDTime = resSvc.GetSkillCfg(101).cdTime / 1000;
+        sk2CDTime = resSvc.GetSkillCfg(102).cdTime / 1000;
+        sk3CDTime = resSvc.GetSkillCfg(103).cdTime / 1000;
 
         RefreshUI();
     }
@@ -76,6 +79,80 @@ public class PlayerCtrlWnd : WindowRoot
             }
         }
         #endregion
+    }
+
+    private void Update() {
+        //test
+        if (Input.GetKeyDown(KeyCode.Space )) {
+            ClickNormalAtk();
+        }
+        if (Input.GetKeyDown(KeyCode.A)) {
+            ClickSkill1Atk();
+        }
+        if (Input.GetKeyDown(KeyCode.W)) {
+            ClickSkill2Atk();
+        }
+        if (Input.GetKeyDown(KeyCode.D)) {
+            ClickSkill3Atk();
+        }
+
+        float delta = Time.deltaTime;
+        if (isSk1CD) {
+            sk1FillCouunt += delta;
+            if (sk1FillCouunt >= sk1CDTime) {
+                isSk1CD = false;
+                SetActive(imgSk1Cd, false);
+                sk1FillCouunt = 0;
+            }
+            else {
+                imgSk1Cd.fillAmount = 1 - sk1FillCouunt / sk1CDTime;
+            }
+
+            sk1NumCount += delta;
+            if (sk1NumCount >= 1) {
+                sk1NumCount -= 1;
+                sk1Num -= 1;
+                SetText(txtSk1Cd, sk1Num);
+            }
+        }
+
+        if (isSk2CD) {
+            sk2FillCouunt += delta;
+            if (sk2FillCouunt >= sk2CDTime) {
+                isSk2CD = false;
+                SetActive(imgSk2Cd, false);
+                sk2FillCouunt = 0;
+            }
+            else {
+                imgSk2Cd.fillAmount = 1 - sk2FillCouunt / sk2CDTime;
+            }
+
+            sk2NumCount += delta;
+            if (sk2NumCount >= 1) {
+                sk2NumCount -= 1;
+                sk2Num -= 1;
+                SetText(txtSk2Cd, sk2Num);
+            }
+        }
+
+        if (isSk3CD) {
+            sk3FillCouunt += delta;
+            if (sk3FillCouunt >= sk3CDTime) {
+                isSk3CD = false;
+                SetActive(imgSk3Cd, false);
+                sk3FillCouunt = 0;
+            }
+            else {
+                imgSk3Cd.fillAmount = 1 - sk3FillCouunt / sk3CDTime;
+            }
+
+            sk3NumCount += delta;
+            if (sk3NumCount >= 1) {
+                sk3NumCount -= 1;
+                sk3Num -= 1;
+                SetText(txtSk3Cd, sk3Num);
+            }
+        }
     }
 
     public void RegisterTouchEvts() {
@@ -115,16 +192,67 @@ public class PlayerCtrlWnd : WindowRoot
         BattleSys.Instance.ReqReleaseSkill(0);
     }
 
+    #region SK1
+    public Image imgSk1Cd;
+    public Text txtSk1Cd;
+    private bool isSk1CD = false;
+    private float sk1CDTime;
+    private int sk1Num;
+    private float sk1FillCouunt = 0;
+    private float sk1NumCount = 0;
+    #endregion
+
+    #region SK2
+    public Image imgSk2Cd;
+    public Text txtSk2Cd;
+    private bool isSk2CD = false;
+    private float sk2CDTime;
+    private int sk2Num;
+    private float sk2FillCouunt = 0;
+    private float sk2NumCount = 0;
+    #endregion
+
+    #region SK3
+    public Image imgSk3Cd;
+    public Text txtSk3Cd;
+    private bool isSk3CD = false;
+    private float sk3CDTime;
+    private int sk3Num;
+    private float sk3FillCouunt = 0;
+    private float sk3NumCount = 0;
+    #endregion
+
     public void ClickSkill1Atk() {
-        BattleSys.Instance.ReqReleaseSkill(1);
+        if (isSk1CD == false) {
+            BattleSys.Instance.ReqReleaseSkill(1);
+            isSk1CD = true;
+            SetActive(imgSk1Cd);
+            imgSk1Cd.fillAmount = 1;
+            sk1Num = (int)sk1CDTime;
+            SetText(txtSk1Cd, sk1Num);
+        }
     }
 
     public void ClickSkill2Atk() {
-        BattleSys.Instance.ReqReleaseSkill(2);
+        if (isSk2CD == false) {
+            BattleSys.Instance.ReqReleaseSkill(2);
+            isSk2CD = true;
+            SetActive(imgSk2Cd);
+            imgSk2Cd.fillAmount = 2;
+            sk2Num = (int)sk2CDTime;
+            SetText(txtSk2Cd, sk2Num);
+        }
     }
 
     public void ClickSkill3Atk() {
-        BattleSys.Instance.ReqReleaseSkill(3);
+        if (isSk3CD == false) {
+            BattleSys.Instance.ReqReleaseSkill(3);
+            isSk3CD = true;
+            SetActive(imgSk3Cd);
+            imgSk3Cd.fillAmount = 3;
+            sk3Num = (int)sk3CDTime;
+            SetText(txtSk3Cd, sk3Num);
+        }
     }
 
     public void ClickResetCfg() {//动态测试技能效果

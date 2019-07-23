@@ -6,6 +6,7 @@
 	功能：逻辑实体的基类
 *****************************************************/
 
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class EntityBase
@@ -15,7 +16,17 @@ public abstract class EntityBase
     public BattleMgr battleMgr = null;
     public StateMgr stateMgr = null;
     public SkillMgr skillMgr = null;
-    public Controller controller = null;
+    protected Controller controller = null;
+    private string name;
+    public string Name {
+        get {
+            return name;
+        }
+
+        set {
+            name = value;
+        }
+    }
 
     public bool canControl = true;
 
@@ -38,10 +49,16 @@ public abstract class EntityBase
 
         set {
             //通知UI血量变化
-            PECommon.Log("hp change" + hp + "to" + value);
+            PECommon.Log("hp change:" + hp + "to" + value);
+            SetHPVal(hp, value);
             hp = value;
         }
     }
+
+    public Queue<int> comboQue = new Queue<int>();
+    public int nextSkillID = 0;
+
+    public SkillCfg curtSkillCfg;
 
     public void Born() {
         stateMgr.ChangeStatus(this, AniState.Born, null);
@@ -65,6 +82,16 @@ public abstract class EntityBase
 
     public void Die() {
         stateMgr.ChangeStatus(this, AniState.Die, null);
+    }
+
+    public void SetCtrl(Controller ctrl) {
+        controller = ctrl;
+    }
+
+    public void SetActive(bool active = true) {
+        if (controller != null) {
+            controller.gameObject.SetActive(active);
+        }
     }
 
     public virtual void SetBattleProps(BattleProps props) {
@@ -102,6 +129,41 @@ public abstract class EntityBase
         }
     }
 
+    public virtual void SetAtkRotation(Vector2 dir, bool offset = false) {
+        if (controller != null) {
+            if (offset) {
+                controller.SetAtkRotationCam(dir);
+            }
+            else {
+                controller.SetAtkRotationLocal(dir);
+            }
+        }
+    }
+
+    public virtual void SetDodge() {
+        if (controller != null) {
+            GameRoot.Instance.dynamicWnd.SetDodge(name);
+        }
+    }
+
+    public virtual void SetCritical(int critical) {
+        if (controller != null) {
+            GameRoot.Instance.dynamicWnd.SetCritical(name, critical);
+        }
+    }
+
+    public virtual void SetHurt(int hurt) {
+        if (controller != null) {
+            GameRoot.Instance.dynamicWnd.SetHurt(name, hurt);
+        }
+    }
+
+    public virtual void SetHPVal(int oldVal, int newVal) {
+        if (controller != null) {
+            GameRoot.Instance.dynamicWnd.SetHPVal(name, oldVal, newVal);
+        }
+    }
+
     public virtual void SkillAttack(int skillID) {
         skillMgr.SkillAttack(this, skillID);
     }
@@ -118,5 +180,29 @@ public abstract class EntityBase
         return controller.transform;
     }
 
+    public AnimationClip[] GetAniClips() {
+        if (controller != null) {
+            return controller.ani.runtimeAnimatorController.animationClips;
+        }
+        return null;
+    }
 
+    public virtual Vector2 CalcTargetDir() {
+        return Vector2.zero;
+    }
+
+    public void ExitCurtSkill() {
+        canControl = true;
+        //连招判定
+        if (curtSkillCfg.isCombo) {
+            if (comboQue.Count > 0) {
+                nextSkillID = comboQue.Dequeue();
+            }
+            else {
+                nextSkillID = 0;
+            }
+        }
+
+        SetAction(Constants.ActionDefault);
+    }
 }

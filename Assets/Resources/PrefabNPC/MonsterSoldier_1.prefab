@@ -981,6 +981,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ani: {fileID: 9500000}
   ctrl: {fileID: 143796100258367512}
+  hpRoot: {fileID: 400052}
 --- !u!143 &143796100258367512
 CharacterController:
   m_ObjectHideFlags: 1

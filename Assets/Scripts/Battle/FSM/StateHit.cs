@@ -29,7 +29,7 @@ public class StateHit : IState
     }
 
     private float GetHitAniLen(EntityBase entity) {
-        AnimationClip[] clips = entity.controller.ani.runtimeAnimatorController.animationClips;
+        AnimationClip[] clips = entity.GetAniClips();
         for (int i = 0; i < clips.Length; i++) {
             string clipName = clips[i].name;
             if (clipName.Contains("hit") || clipName.Contains("Hit") || clipName.Contains("HIT")) {

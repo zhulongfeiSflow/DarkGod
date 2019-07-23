@@ -64,5 +64,6 @@ public class PathDefine {
     #region Player
     public const string AssassinCityPlayerPrefab = "PrefabPlayer/AssassinCity";
     public const string AssassinBattlePlayerPrefab = "PrefabPlayer/AssassinBattle";
+    public const string HPItemPrefab = "PrefabUI/ItemEntityHp";
     #endregion
 }

@@ -3,7 +3,7 @@
 	<item ID="1001">
 		<mName>铁甲战士</mName>
 		<resPath>PrefabNPC/MonsterSoldier_1</resPath>
-		<hp>20000</hp>
+		<hp>2000</hp>
 		<ad>100</ad>
 		<ap>80</ap>
 		<addef>5</addef>

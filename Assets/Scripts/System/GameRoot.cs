@@ -19,7 +19,8 @@ public class GameRoot : MonoBehaviour {
     private void Start() {
         Instance = this;
         DontDestroyOnLoad(this);
-        PECommon.Log("Game Start...");
+
+        Debug.Log("Game Start...");
 
         ClearUIRoot();
 
@@ -32,8 +33,6 @@ public class GameRoot : MonoBehaviour {
         for (int i = 0; i < canvas.childCount; i++) {
             canvas.GetChild(i).gameObject.SetActive(false);
         }
-
-        dynamicWnd.SetWndState(true);
     }
 
     private void Init() {
@@ -56,7 +55,8 @@ public class GameRoot : MonoBehaviour {
         fubenSys.InitSys();
         BattleSys battleSys = GetComponent<BattleSys>();
         battleSys.InitSys();
-
+               
+        dynamicWnd.SetWndState(true);
         //进入登录场景并加载相应的UI
         login.EnterLogin();
 

@@ -72,7 +72,8 @@ public class SkillMgr : MonoBehaviour
             int dodgeNum = PETools.RDint(1, 100, rd);
             if (dodgeNum <= target.Props.dodge) {
                 //UI显示闪避 TODO
-                PECommon.Log("闪避Rate:" + dodgeNum + "/" + target.Props.dodge);
+                //PECommon.Log("闪避Rate:" + dodgeNum + "/" + target.Props.dodge);
+                target.SetDodge();
                 return;
             }
             //计算属性加成
@@ -83,7 +84,8 @@ public class SkillMgr : MonoBehaviour
                 float criticalRate = 1 + PETools.RDint(1, 100, rd) / 100.0f;
                 dmgSum += (int)criticalRate * dmgSum;
 
-                PECommon.Log("暴击Rate:" + criticalNum + "/" + caster.Props.critical);
+                //PECommon.Log("暴击Rate:" + criticalNum + "/" + caster.Props.critical);
+                target.SetCritical(dmgSum);
             }
             //计算穿甲
             int addef = (int)((1 - caster.Props.pierce / 100.0f) * target.Props.addef);
@@ -100,12 +102,18 @@ public class SkillMgr : MonoBehaviour
         }
 
         //最终伤害
-        dmgSum = dmgSum < 0 ? 0 : dmgSum;
+        if (dmgSum < 0) {
+            dmgSum = 0;
+            return;
+        }
+        target.SetHurt(dmgSum);
 
         if (target.HP < dmgSum) {
             target.HP = 0;
             //目标死亡
             target.Die();
+            target.battleMgr.RemoveMonster(target.Name);
+
         }
         else {
             target.HP -= dmgSum;
@@ -142,6 +150,16 @@ public class SkillMgr : MonoBehaviour
     /// </summary>
     public void AttackEffect(EntityBase entity, int skillID) {
         SkillCfg skillData = resSvc.GetSkillCfg(skillID);
+
+        if (entity.GetDirInput() == Vector2.zero) {
+            Vector2 dir = entity.CalcTargetDir();
+            if (dir != Vector2.zero) {
+                entity.SetAtkRotation(dir);
+            }
+        }
+        else {
+            entity.SetAtkRotation(entity.GetDirInput(), true);
+        }
 
         entity.SetAction(skillData.aniAction);
         entity.SetFX(skillData.fx, skillData.skillTime);

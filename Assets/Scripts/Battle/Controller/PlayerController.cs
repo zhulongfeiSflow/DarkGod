@@ -10,9 +10,16 @@ using UnityEngine;
 
 public class PlayerController : Controller
 {
-    public GameObject daggeratk1fx;
+    public GameObject daggeSkill1fx;
+    public GameObject daggeSkill2fx;
+    public GameObject daggeSkill3fx;
 
-    private Transform camTrans;
+    public GameObject daggeratk1fx;
+    public GameObject daggeratk2fx;
+    public GameObject daggeratk3fx;
+    public GameObject daggeratk4fx;
+    public GameObject daggeratk5fx;
+
     private Vector3 camOffset;
 
     private float targetBlend;
@@ -24,8 +31,30 @@ public class PlayerController : Controller
         camTrans = Camera.main.transform;
         camOffset = transform.position - camTrans.position;
 
+        if (daggeSkill1fx != null) {
+            fxDic.Add(daggeSkill1fx.name, daggeSkill1fx);
+        }
+        if (daggeSkill2fx != null) {
+            fxDic.Add(daggeSkill2fx.name, daggeSkill2fx);
+        }
+        if (daggeSkill3fx != null) {
+            fxDic.Add(daggeSkill3fx.name, daggeSkill3fx);
+        }
+
         if (daggeratk1fx != null) {
             fxDic.Add(daggeratk1fx.name, daggeratk1fx);
+        }
+        if (daggeratk2fx != null) {
+            fxDic.Add(daggeratk2fx.name, daggeratk2fx);
+        }
+        if (daggeratk3fx != null) {
+            fxDic.Add(daggeratk3fx.name, daggeratk3fx);
+        }
+        if (daggeratk4fx != null) {
+            fxDic.Add(daggeratk4fx.name, daggeratk4fx);
+        }
+        if (daggeratk5fx != null) {
+            fxDic.Add(daggeratk5fx.name, daggeratk5fx);
         }
     }
 

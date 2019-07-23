@@ -42,9 +42,11 @@ public class SkillActionCfg : BaseData<SkillActionCfg>
 public class SkillCfg : BaseData<SkillCfg>
 {
     public string skillName;
+    public int cdTime;
     public int skillTime;
     public int aniAction;
     public string fx;
+    public bool isCombo;
     public DamageType dmgType;
     public List<int> skillMoveLst;
     public List<int> skillActionLst;
