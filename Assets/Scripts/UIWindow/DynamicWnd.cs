@@ -18,6 +18,8 @@ public class DynamicWnd : WindowRoot
     public Text txtTips;
     public Transform hpItemRoot;
 
+    public Animation selfDodgeAni;
+
     private bool isTipsShow = false;
     private Queue<string> tipsQue = new Queue<string>();
     private Dictionary<string, ItemEntityHp> itemDic = new Dictionary<string, ItemEntityHp>();
@@ -91,9 +93,7 @@ public class DynamicWnd : WindowRoot
             itemDic.Remove(mName);
         }
     }
-
-
-
+       
     public void SetDodge(string key) {
         ItemEntityHp item = null;
         if (itemDic.TryGetValue(key, out
@@ -126,6 +126,9 @@ public class DynamicWnd : WindowRoot
         }
     }
 
-
+    public void SetSelfDodge() {
+        selfDodgeAni.Stop();
+        selfDodgeAni.Play();
+    }
 
 }

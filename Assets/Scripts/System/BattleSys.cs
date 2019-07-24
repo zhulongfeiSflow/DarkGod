@@ -47,4 +47,8 @@ public class BattleSys : SystemRoot
     public Vector2 GetDirInput() {
         return playerCtrlWnd.currentDir;
     }
+
+    public AniState GetPlayerState() {
+        return battleMgr.entitySelfPlayer.currentAniState;
+    }
 }

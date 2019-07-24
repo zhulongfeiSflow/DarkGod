@@ -2224,6 +2224,8 @@ MonoBehaviour:
   txtSk2Cd: {fileID: 114187922119209586}
   imgSk3Cd: {fileID: 114119953161720800}
   txtSk3Cd: {fileID: 114163613423828938}
+  txtSelfHP: {fileID: 114587397811287566}
+  imgSelfHp: {fileID: 114746771112576446}
 --- !u!114 &114659534290877336
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2443,10 +2445,10 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 21300000, guid: 7e7369882515d994db46188e6ef8de5e, type: 3}
-  m_Type: 0
+  m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
-  m_FillMethod: 4
+  m_FillMethod: 0
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0

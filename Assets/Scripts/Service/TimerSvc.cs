@@ -40,4 +40,8 @@ public class TimerSvc : SystemRoot
         return pt.GetMillisecondsTime();
     }
 
+    public void DelTask(int tid) {
+        pt.DeleteTimeTask(tid);
+    }
+
 }

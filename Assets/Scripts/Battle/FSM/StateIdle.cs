@@ -13,6 +13,7 @@ public class StateIdle : IState
     public void Enter(EntityBase entity, params object[] args) {
         entity.currentAniState = AniState.Idle;
         entity.SetDir(Vector2.zero);
+        entity.skEndCB = -1;
         //PECommon.Log("Enter idle");
     }
 

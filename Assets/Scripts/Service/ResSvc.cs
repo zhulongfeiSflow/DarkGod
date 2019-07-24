@@ -38,6 +38,7 @@ public class ResSvc : MonoBehaviour
         //return;
         InitSkillCfg(PathDefine.SkillCfg);
         InitSkillMoveCfg(PathDefine.SkillMoveCfg);
+        InitSkillActionCfg(PathDefine.SkillActionCfg);
         PECommon.Log("Reset SkillCfgs...");
     }
 
@@ -265,7 +266,8 @@ public class ResSvc : MonoBehaviour
                 }
                 int ID = Convert.ToInt32(ele.GetAttributeNode("ID").InnerText);
 
-                MonsterCfg mc = new MonsterCfg() { ID = ID,
+                MonsterCfg mc = new MonsterCfg() {
+                    ID = ID,
                     bps = new BattleProps(),
                 };
 
@@ -274,8 +276,20 @@ public class ResSvc : MonoBehaviour
                         case "mName":
                             mc.mName = e.InnerText;
                             break;
+                        case "mType":
+                            mc.mType = (MonsterType)int.Parse(e.InnerText);
+                            break;
+                        case "isStop":
+                            mc.isStop = e.InnerText.Equals("1");
+                            break;
                         case "resPath":
                             mc.resPath = e.InnerText;
+                            break;
+                        case "skillID":
+                            mc.skillID = int.Parse(e.InnerText);
+                            break;
+                        case "atkDis":
+                            mc.atkDis = float.Parse(e.InnerText);
                             break;
                         case "hp":
                             mc.bps.hp = int.Parse(e.InnerText);
@@ -520,7 +534,12 @@ public class ResSvc : MonoBehaviour
                 }
                 int ID = Convert.ToInt32(ele.GetAttributeNode("ID").InnerText);
 
-                SkillCfg sc = new SkillCfg() { ID = ID };
+                SkillCfg sc = new SkillCfg() {
+                    ID = ID,
+                    skillMoveLst = new List<int>(),
+                    skillActionLst = new List<int>(),
+                    skillDamageLst = new List<int>(),
+                };
 
                 foreach (XmlElement e in nodList[i].ChildNodes) {
                     switch (e.Name) {
@@ -541,6 +560,12 @@ public class ResSvc : MonoBehaviour
                             break;
                         case "isCombo":
                             sc.isCombo = e.InnerText.Equals("1");
+                            break;
+                        case "isCollide":
+                            sc.isCollide = e.InnerText.Equals("1");
+                            break;
+                        case "isBreak":
+                            sc.isBreak = e.InnerText.Equals("1");
                             break;
                         case "dmgType":
                             sc.dmgType = (DamageType)int.Parse(e.InnerText);

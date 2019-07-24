@@ -21,7 +21,11 @@ public class MonsterData : BaseData<MonsterData>
 public class MonsterCfg : BaseData<MonsterCfg>
 {
     public string mName;
+    public MonsterType mType;//1:普通怪;2:boss怪
+    public bool isStop;//怪物是否能被攻击中断当前状态
     public string resPath;
+    public int skillID;
+    public float atkDis;
     public BattleProps bps;
 }
 
@@ -47,6 +51,8 @@ public class SkillCfg : BaseData<SkillCfg>
     public int aniAction;
     public string fx;
     public bool isCombo;
+    public bool isCollide;
+    public bool isBreak;
     public DamageType dmgType;
     public List<int> skillMoveLst;
     public List<int> skillActionLst;

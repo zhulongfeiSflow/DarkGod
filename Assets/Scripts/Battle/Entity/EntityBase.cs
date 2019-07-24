@@ -30,6 +30,10 @@ public abstract class EntityBase
 
     public bool canControl = true;
 
+    public EntityType entityType = EntityType.None;
+
+    public EntityState entityState = EntityState.None;
+
     private BattleProps props;
     public BattleProps Props {
         get {
@@ -60,6 +64,13 @@ public abstract class EntityBase
 
     public SkillCfg curtSkillCfg;
 
+    //技能位移的回调ID
+    public List<int> skMoveCBLst = new List<int>();
+    //技能的伤害计算回调ID
+    public List<int> skActCBLst = new List<int>();
+
+    public int skEndCB = -1;
+
     public void Born() {
         stateMgr.ChangeStatus(this, AniState.Born, null);
     }
@@ -82,6 +93,10 @@ public abstract class EntityBase
 
     public void Die() {
         stateMgr.ChangeStatus(this, AniState.Die, null);
+    }
+
+    public virtual void TickAILogic() {
+
     }
 
     public void SetCtrl(Controller ctrl) {
@@ -140,6 +155,7 @@ public abstract class EntityBase
         }
     }
 
+    #region 伤害信息的显示
     public virtual void SetDodge() {
         if (controller != null) {
             GameRoot.Instance.dynamicWnd.SetDodge(name);
@@ -163,6 +179,7 @@ public abstract class EntityBase
             GameRoot.Instance.dynamicWnd.SetHPVal(name, oldVal, newVal);
         }
     }
+    #endregion
 
     public virtual void SkillAttack(int skillID) {
         skillMgr.SkillAttack(this, skillID);
@@ -187,22 +204,54 @@ public abstract class EntityBase
         return null;
     }
 
+    public AudioSource GetAudio() {
+        return controller.GetComponent<AudioSource>();
+    }
+
+    public virtual bool GetBreakState() {
+        return true;
+    }
+
     public virtual Vector2 CalcTargetDir() {
         return Vector2.zero;
     }
 
     public void ExitCurtSkill() {
         canControl = true;
-        //连招判定
-        if (curtSkillCfg.isCombo) {
-            if (comboQue.Count > 0) {
-                nextSkillID = comboQue.Dequeue();
+        if (curtSkillCfg != null) {
+            if (!curtSkillCfg.isBreak) {
+                entityState = EntityState.None;
             }
-            else {
-                nextSkillID = 0;
+            //连招判定
+            if (curtSkillCfg.isCombo) {
+                if (comboQue.Count > 0) {
+                    nextSkillID = comboQue.Dequeue();
+                }
+                else {
+                    nextSkillID = 0;
+                }
             }
+            curtSkillCfg = null;
         }
-
         SetAction(Constants.ActionDefault);
+    }
+
+    public void RemoveMoveCB(int tid) {
+        int index = skMoveCBLst.IndexOf(tid);
+        if (index != -1) {
+            skMoveCBLst.RemoveAt(index);
+        }
+    }
+
+    public void RemoveActionCB(int tid) {
+        int index = skActCBLst.IndexOf(tid);
+        if (index != -1) {
+            skActCBLst.RemoveAt(index);
+        }
+    }
+
+    public void SKClear() {
+        skMoveCBLst.Clear();
+        skActCBLst.Clear();
     }
 }

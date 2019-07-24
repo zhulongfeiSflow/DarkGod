@@ -34,11 +34,49 @@ public class PlayerCtrlWnd : WindowRoot
 
     public Vector2 currentDir;
 
+    #region SK1
+    public Image imgSk1Cd;
+    public Text txtSk1Cd;
+    private bool isSk1CD = false;
+    private float sk1CDTime;
+    private int sk1Num;
+    private float sk1FillCouunt = 0;
+    private float sk1NumCount = 0;
+    #endregion
+
+    #region SK2
+    public Image imgSk2Cd;
+    public Text txtSk2Cd;
+    private bool isSk2CD = false;
+    private float sk2CDTime;
+    private int sk2Num;
+    private float sk2FillCouunt = 0;
+    private float sk2NumCount = 0;
+    #endregion
+
+    #region SK3
+    public Image imgSk3Cd;
+    public Text txtSk3Cd;
+    private bool isSk3CD = false;
+    private float sk3CDTime;
+    private int sk3Num;
+    private float sk3FillCouunt = 0;
+    private float sk3NumCount = 0;
+    #endregion
+
+    public Text txtSelfHP;
+    public Image imgSelfHp;
+    private int HPSum;
+
     protected override void InitWnd() {
         base.InitWnd();
         pointDis = Screen.height * 1.0f / Constants.ScreenStandardHeght * Constants.ScreenOPDis;
         defaultPos = imgDirBg.transform.position;
         SetActive(imgDirPoint, false);
+
+        HPSum = GameRoot.Instance.PlayerData.hp;
+        SetText(txtSelfHP, HPSum + "/" + HPSum);
+        imgSelfHp.fillAmount = 1;
 
         RegisterTouchEvts();
         sk1CDTime = resSvc.GetSkillCfg(101).cdTime / 1000;
@@ -83,7 +121,7 @@ public class PlayerCtrlWnd : WindowRoot
 
     private void Update() {
         //test
-        if (Input.GetKeyDown(KeyCode.Space )) {
+        if (Input.GetKeyDown(KeyCode.Space)) {
             ClickNormalAtk();
         }
         if (Input.GetKeyDown(KeyCode.A)) {
@@ -192,38 +230,8 @@ public class PlayerCtrlWnd : WindowRoot
         BattleSys.Instance.ReqReleaseSkill(0);
     }
 
-    #region SK1
-    public Image imgSk1Cd;
-    public Text txtSk1Cd;
-    private bool isSk1CD = false;
-    private float sk1CDTime;
-    private int sk1Num;
-    private float sk1FillCouunt = 0;
-    private float sk1NumCount = 0;
-    #endregion
-
-    #region SK2
-    public Image imgSk2Cd;
-    public Text txtSk2Cd;
-    private bool isSk2CD = false;
-    private float sk2CDTime;
-    private int sk2Num;
-    private float sk2FillCouunt = 0;
-    private float sk2NumCount = 0;
-    #endregion
-
-    #region SK3
-    public Image imgSk3Cd;
-    public Text txtSk3Cd;
-    private bool isSk3CD = false;
-    private float sk3CDTime;
-    private int sk3Num;
-    private float sk3FillCouunt = 0;
-    private float sk3NumCount = 0;
-    #endregion
-
     public void ClickSkill1Atk() {
-        if (isSk1CD == false) {
+        if (isSk1CD == false && BattleSys.Instance.GetPlayerState() != AniState.Attack) {
             BattleSys.Instance.ReqReleaseSkill(1);
             isSk1CD = true;
             SetActive(imgSk1Cd);
@@ -234,7 +242,7 @@ public class PlayerCtrlWnd : WindowRoot
     }
 
     public void ClickSkill2Atk() {
-        if (isSk2CD == false) {
+        if (isSk2CD == false && BattleSys.Instance.GetPlayerState() != AniState.Attack) {
             BattleSys.Instance.ReqReleaseSkill(2);
             isSk2CD = true;
             SetActive(imgSk2Cd);
@@ -245,7 +253,7 @@ public class PlayerCtrlWnd : WindowRoot
     }
 
     public void ClickSkill3Atk() {
-        if (isSk3CD == false) {
+        if (isSk3CD == false && BattleSys.Instance.GetPlayerState() != AniState.Attack) {
             BattleSys.Instance.ReqReleaseSkill(3);
             isSk3CD = true;
             SetActive(imgSk3Cd);
@@ -259,4 +267,8 @@ public class PlayerCtrlWnd : WindowRoot
         resSvc.ResetSkillCfgs();
     }
 
+    public void SetSelfHPBarVal(int hp) {
+        SetText(txtSelfHP, hp + "/" + HPSum);
+        imgSelfHp.fillAmount = hp * 1.0f / HPSum;
+    }
 }

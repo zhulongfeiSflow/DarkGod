@@ -22,6 +22,28 @@ public enum DamageType
     AP = 2,
 }
 
+public enum EntityType
+{
+    None,
+    Player,
+    Monster,
+}
+
+public enum EntityState
+{
+    None,
+    BatiState,//霸体状态:不受控制,可受伤害
+    //TODO
+}
+
+public enum MonsterType
+{
+    None,
+    Normal = 1,
+    Boss = 2,
+}
+
+
 
 public class Constants
 {
@@ -67,6 +89,7 @@ public class Constants
     public const string BGLogin = "bgLogin";
     public const string BGMainCity = "bgMainCity";
     public const string BGHuangYe = "bgHuangYe";
+    public const string Assassin_Hit = "assassin_Hit";
 
     //登录按钮音效
     public const string UILoginBtn = "uiLoginBtn";
@@ -98,7 +121,7 @@ public class Constants
 
     //角色移动速度
     public const int PlayerMoveSpeed = 8;
-    public const int MonsterMoveSpeed = 4;
+    public const int MonsterMoveSpeed = 3;
 
     //运动平滑加速度
     public const float AccelerSpeed = 5;

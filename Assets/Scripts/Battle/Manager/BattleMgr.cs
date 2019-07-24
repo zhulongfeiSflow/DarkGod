@@ -57,6 +57,12 @@ public class BattleMgr : MonoBehaviour
         });
     }
 
+    public void Update() {
+        foreach (var item in monsterDic.Values) {
+            item.TickAILogic();
+        }
+    }
+
     private void LoadPlayer(MapCfg mapData) {
         GameObject player = resSvc.LoadPrefab(PathDefine.AssassinBattlePlayerPrefab, true);
         player.transform.position = mapData.playerBornPos;
@@ -154,13 +160,15 @@ public class BattleMgr : MonoBehaviour
         if (entitySelfPlayer.canControl == false) {
             return;
         }
-
-        if (dir == Vector2.zero) {
-            entitySelfPlayer.Idle();
-        }
-        else {
-            entitySelfPlayer.Move();
-            entitySelfPlayer.SetDir(dir);
+        if (entitySelfPlayer.currentAniState == AniState.Idle ||
+            entitySelfPlayer.currentAniState == AniState.Move) {
+            if (dir == Vector2.zero) {
+                entitySelfPlayer.Idle();
+            }
+            else {
+                entitySelfPlayer.Move();
+                entitySelfPlayer.SetDir(dir);
+            }
         }
     }
 
