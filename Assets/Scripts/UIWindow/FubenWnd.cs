@@ -10,7 +10,8 @@ using PEProtocol;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class FubenWnd : WindowRoot {
+public class FubenWnd : WindowRoot
+{
 
     public Button[] fbBtnArr;
 
@@ -29,16 +30,28 @@ public class FubenWnd : WindowRoot {
         int fbid = pd.fuben;
         for (int i = 0; i < fbBtnArr.Length; i++) {
             if (i < fbid % 10000) {
-                SetActive(fbBtnArr[i].gameObject);
-                if (i == fbid % 10000 - 1) {
-                    pointerTrans.SetParent(fbBtnArr[i].transform);
-                    pointerTrans.transform.localPosition = new Vector3(25, 100, 0);
-                }
+                SetActive(fbBtnArr[i].gameObject, true);
+                //if (i == fbid % 10000 - 1) {
+                //    pointerTrans.SetParent(fbBtnArr[i].transform);
+                //    pointerTrans.transform.localPosition = new Vector3(25, 100, 0);
+                //}
             }
             else {
                 SetActive(fbBtnArr[i].gameObject, false);
             }
         }
+
+        int count = fbid % 10000 - 1;
+        if (count >= fbBtnArr.Length) {
+            pointerTrans.gameObject.SetActive(false);
+        }
+        else {
+            pointerTrans.SetParent(fbBtnArr[count].transform);
+            pointerTrans.transform.localPosition = new Vector3(25, 100, 0);
+
+        }
+
+
     }
 
     public void ClickCloseBtn() {

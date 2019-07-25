@@ -93,7 +93,14 @@ public class DynamicWnd : WindowRoot
             itemDic.Remove(mName);
         }
     }
-       
+
+    public void RemoveAllHpItemInfo() {
+        foreach (var item in itemDic.Values) {
+            Destroy(item.gameObject);
+        }
+        itemDic.Clear();
+    }
+
     public void SetDodge(string key) {
         ItemEntityHp item = null;
         if (itemDic.TryGetValue(key, out

@@ -78,6 +78,7 @@ public class PlayerCtrlWnd : WindowRoot
         SetText(txtSelfHP, HPSum + "/" + HPSum);
         imgSelfHp.fillAmount = 1;
 
+        SetBossHPBar(false);
         RegisterTouchEvts();
         sk1CDTime = resSvc.GetSkillCfg(101).cdTime / 1000;
         sk2CDTime = resSvc.GetSkillCfg(102).cdTime / 1000;
@@ -134,6 +135,7 @@ public class PlayerCtrlWnd : WindowRoot
             ClickSkill3Atk();
         }
 
+        #region Skill CD
         float delta = Time.deltaTime;
         if (isSk1CD) {
             sk1FillCouunt += delta;
@@ -190,6 +192,12 @@ public class PlayerCtrlWnd : WindowRoot
                 sk3Num -= 1;
                 SetText(txtSk3Cd, sk3Num);
             }
+        }
+        #endregion
+
+        if (transBossHPBar.gameObject.activeSelf) {
+            BlendBossHP();
+            imgYellow.fillAmount = currentPrg;
         }
     }
 
@@ -267,8 +275,44 @@ public class PlayerCtrlWnd : WindowRoot
         resSvc.ResetSkillCfgs();
     }
 
+    public void ClickHeadBtn() {
+        BattleSys.Instance.battleMgr.isPauseGame = true;
+        BattleSys.Instance.SetBattleEndWndState(FBEndType.Pause);
+    }
+
     public void SetSelfHPBarVal(int hp) {
         SetText(txtSelfHP, hp + "/" + HPSum);
         imgSelfHp.fillAmount = hp * 1.0f / HPSum;
+    }
+
+    public Transform transBossHPBar;
+    public Image imgRed;
+    public Image imgYellow;
+    private float currentPrg = 1f;
+    private float targetPrg = 1f;
+
+    public void SetBossHPBarVal(int oldVal, int newVal, int sumVal) {
+        currentPrg = oldVal * 1.0f / sumVal;
+        targetPrg = newVal * 1.0f / sumVal;
+        imgRed.fillAmount = targetPrg;
+    }
+
+    private void BlendBossHP() {
+        if (Mathf.Abs(currentPrg - targetPrg) < Constants.AccelerHPSpeed * Time.deltaTime) {
+            currentPrg = targetPrg;
+        }
+        else if (currentPrg > targetPrg) {
+            currentPrg -= Constants.AccelerHPSpeed * Time.deltaTime;
+        }
+        else {
+            currentPrg += Constants.AccelerHPSpeed * Time.deltaTime;
+        }
+        imgYellow.fillAmount = currentPrg;
+    }
+
+    public void SetBossHPBar(bool state, float prg = 1) {
+        SetActive(transBossHPBar, state);
+        imgRed.fillAmount = prg;
+        imgYellow.fillAmount = prg;
     }
 }

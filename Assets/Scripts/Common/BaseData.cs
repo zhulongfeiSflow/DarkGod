@@ -88,6 +88,10 @@ public class MapCfg : BaseData<MapCfg> {
     public Vector3 playerBornPos;
     public Vector3 playerBornRote;
     public List<MonsterData> monsterLst;
+
+    public int exp;
+    public int coin;
+    public int crystal;
 }
 
 public class TaskRewardCfg : BaseData<TaskRewardCfg> {

@@ -12,33 +12,7 @@ public class StateHit : IState
 {
     public void Enter(EntityBase entity, params object[] args) {
         entity.currentAniState = AniState.Hit;
-        entity.SetDir(Vector2.zero);
-        entity.SetSkillMoveState(false);
-
-        foreach (var tid in entity.skMoveCBLst) {
-            TimerSvc.Instance.DelTask(tid);
-        }
-
-        foreach (var tid in entity.skActCBLst) {
-            TimerSvc.Instance.DelTask(tid);
-        }
-
-        entity.SKClear();
-
-        //攻击被中断,要删除定时回调
-        if (entity.skEndCB != -1) {
-            TimerSvc.Instance.DelTask(entity.skEndCB);
-            entity.skEndCB = -1;
-        }
-
-        //清空连招
-        if (entity.nextSkillID != 0 || entity.comboQue.Count > 0) {
-            entity.nextSkillID = 0;
-            entity.comboQue.Clear();
-
-            entity.battleMgr.lastAtkTime = 0;
-            entity.battleMgr.comboIndex = 0;
-        }
+        entity.RmvSkillCB();
     }
 
     public void Exit(EntityBase entity, params object[] args) {

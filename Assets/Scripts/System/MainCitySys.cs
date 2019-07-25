@@ -47,6 +47,7 @@ public class MainCitySys : SystemRoot {
             //打开主城场景UI
             mainCityWnd.SetWndState(true);
 
+            GameRoot.Instance.GetComponent<AudioListener>().enabled = false;
             //播放主城背景音乐
             audioSvc.PlayBGMusic(Constants.BGMainCity);
 

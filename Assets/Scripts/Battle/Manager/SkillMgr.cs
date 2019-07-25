@@ -38,10 +38,12 @@ public class SkillMgr : MonoBehaviour
             int index = i;
             if (sum > 0) {
                 int actid = timerSvc.AddTimeTask((int tid) =>
-                  {
-                      SkillAction(entity, skillData, index);
-                      entity.RemoveActionCB(tid);
-                  }, sum);
+                {
+                    if (entity != null) {
+                        SkillAction(entity, skillData, index);
+                        entity.RemoveActionCB(tid);
+                    }
+                }, sum);
                 entity.skActCBLst.Add(actid);
             }
             else {
@@ -57,6 +59,9 @@ public class SkillMgr : MonoBehaviour
         int damage = skillCfg.skillDamageLst[index];
         if (caster.entityType == EntityType.Monster) {
             EntityPlayer targetEntity = caster.battleMgr.entitySelfPlayer;
+            if (targetEntity == null) {
+                return;
+            }
             //判断距离,判断角度
             if (InRange(caster.GetPos(), targetEntity.GetPos(), skillActionCfg.radius)
                     && InAngle(caster.GetTrans(), targetEntity.GetPos(), skillActionCfg.angle)) {
@@ -127,7 +132,13 @@ public class SkillMgr : MonoBehaviour
             target.HP = 0;
             //目标死亡
             target.Die();
-            target.battleMgr.RemoveMonster(target.Name);
+            if (target.entityType == EntityType.Monster) {
+                target.battleMgr.RemoveMonster(target.Name);
+            }
+            else if (target.entityType == EntityType.Player) {
+                target.battleMgr.EndBattle(false, 0);
+                target.battleMgr.entitySelfPlayer = null;
+            }
 
         }
         else {

@@ -12,6 +12,7 @@ public class MapMgr : MonoBehaviour
 {
     private int waveIndex = 1;//默认第一批怪物
     private BattleMgr battleMgr;
+    public TriggerData[] triggerArr;
 
     public void Init(BattleMgr bm) {
         battleMgr = bm;
@@ -22,5 +23,28 @@ public class MapMgr : MonoBehaviour
         battleMgr.LoadMonsterByWaveID(waveIndex);
 
         PECommon.Log("Init MapMgr Done.");
+    }
+
+    public void TriggleMonsterBorn(TriggerData trigger, int waveIndex) {
+        if (battleMgr != null) {
+            BoxCollider co = trigger.gameObject.GetComponent<BoxCollider>();
+            co.isTrigger = false;
+
+            battleMgr.LoadMonsterByWaveID(waveIndex);
+            battleMgr.ActiveCurrentBatchMonster();
+            battleMgr.triggerCheck = true;
+        }
+    }
+
+    public bool SetNextTriggerOn() {
+        waveIndex += 1;
+        for (int i = 0; i < triggerArr.Length; i++) {
+            if (triggerArr[i].triggleWave == waveIndex) {
+                BoxCollider co = triggerArr[i].gameObject.GetComponent<BoxCollider>();
+                co.isTrigger = true;
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -53,7 +53,7 @@ public abstract class EntityBase
 
         set {
             //通知UI血量变化
-            PECommon.Log("hp change:" + hp + "to" + value);
+            //PECommon.Log("hp change:" + hp + "to" + value);
             SetHPVal(hp, value);
             hp = value;
         }
@@ -208,6 +208,10 @@ public abstract class EntityBase
         return controller.GetComponent<AudioSource>();
     }
 
+    public CharacterController GetCC() {
+        return controller.GetComponent<CharacterController>();
+    }
+
     public virtual bool GetBreakState() {
         return true;
     }
@@ -253,5 +257,35 @@ public abstract class EntityBase
     public void SKClear() {
         skMoveCBLst.Clear();
         skActCBLst.Clear();
+    }
+
+    public void RmvSkillCB() {
+        SetDir(Vector2.zero);
+        SetSkillMoveState(false);
+
+        foreach (var tid in skMoveCBLst) {
+            TimerSvc.Instance.DelTask(tid);
+        }
+
+        foreach (var tid in skActCBLst) {
+            TimerSvc.Instance.DelTask(tid);
+        }
+
+        SKClear();
+
+        //攻击被中断,要删除定时回调
+        if (skEndCB != -1) {
+            TimerSvc.Instance.DelTask(skEndCB);
+            skEndCB = -1;
+        }
+
+        //清空连招
+        if (nextSkillID != 0 || comboQue.Count > 0) {
+            nextSkillID = 0;
+            comboQue.Clear();
+
+            battleMgr.lastAtkTime = 0;
+            battleMgr.comboIndex = 0;
+        }
     }
 }

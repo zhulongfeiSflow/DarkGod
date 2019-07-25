@@ -15,25 +15,21 @@ public class AudioSvc : MonoBehaviour
     public AudioSource bgAudio;
     public AudioSource uiAudio;
 
-    public void InitSvc()
-    {
+    public void InitSvc() {
         Instance = this;
         PECommon.Log("Init AudioSvc...");
     }
 
-    public void PlayBGMusic(string name, bool isLoop =  true)
-    {
+    public void PlayBGMusic(string name, bool isLoop = true) {
         AudioClip audio = ResSvc.Instance.LoadAudio("ResAudio/" + name, true);
-        if (bgAudio.clip == null || bgAudio.clip.name != audio.name)
-        {
+        if (bgAudio.clip == null || bgAudio.clip.name != audio.name) {
             bgAudio.clip = audio;
             bgAudio.loop = isLoop;
             bgAudio.Play();
         }
     }
 
-    public void PlayUIAudio(string name)
-    {
+    public void PlayUIAudio(string name) {
         AudioClip audio = ResSvc.Instance.LoadAudio("ResAudio/" + name, true);
         uiAudio.clip = audio;
         uiAudio.Play();
@@ -43,5 +39,11 @@ public class AudioSvc : MonoBehaviour
         AudioClip audio = ResSvc.Instance.LoadAudio("ResAudio/" + name, true);
         charAudio.clip = audio;
         charAudio.Play();
+    }
+
+    public void StopBgMusic() {
+        if (bgAudio != null) {
+            bgAudio.Stop();
+        }
     }
 }

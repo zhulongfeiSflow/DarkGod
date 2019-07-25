@@ -182,6 +182,9 @@ public class NetSvc : MonoBehaviour
             case CMD.RspFBFight:
                 FubenSys.Instance.RspFBFight(msg);
                 break;
+            case CMD.RspFBFightEnd:
+                BattleSys.Instance.RspFBFightEnd(msg);
+                break;
             default:
                 GameRoot.AddTips("该请求客户端不支持！"+((CMD)msg.cmd).ToString());
                 break;

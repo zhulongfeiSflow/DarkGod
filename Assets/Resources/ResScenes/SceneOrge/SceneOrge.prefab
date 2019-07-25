@@ -18066,6 +18066,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4461722745438976}
   - component: {fileID: 65819714106535496}
+  - component: {fileID: 114267419962635132}
   m_Layer: 8
   m_Name: door2
   m_TagString: Untagged
@@ -18438,6 +18439,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4653812580429504}
   - component: {fileID: 65780809632693620}
+  - component: {fileID: 114813358999318972}
   m_Layer: 8
   m_Name: door3
   m_TagString: Untagged
@@ -20856,6 +20858,32 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &114267419962635132
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1568722264195668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6855079af01967041a1532e04f4124a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triggleWave: 2
+  mapMgr: {fileID: 114840849966925194}
+--- !u!114 &114813358999318972
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1986553909874128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6855079af01967041a1532e04f4124a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triggleWave: 3
+  mapMgr: {fileID: 114840849966925194}
 --- !u!114 &114840849966925194
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -20867,6 +20895,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c3e64bb60592c849a4deed34d28a01c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  triggerArr:
+  - {fileID: 114267419962635132}
+  - {fileID: 114813358999318972}
 --- !u!198 &198197396696666222
 ParticleSystem:
   m_ObjectHideFlags: 1

@@ -7,6 +7,7 @@
 *****************************************************/
 
 using PEProtocol;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -25,7 +26,7 @@ public class BattleMgr : MonoBehaviour
 
     private Dictionary<string, EntityMonster> monsterDic = new Dictionary<string, EntityMonster>();
 
-    public void Init(int mapid) {
+    public void Init(int mapid, Action cb = null) {
         resSvc = ResSvc.Instance;
         audioSvc = AudioSvc.Instance;
 
@@ -54,13 +55,36 @@ public class BattleMgr : MonoBehaviour
             ActiveCurrentBatchMonster();
 
             audioSvc.PlayBGMusic(Constants.BGHuangYe);
+
+            if (cb != null) {
+                cb();
+            }
         });
     }
 
+    public bool triggerCheck = true;
+    public bool isPauseGame = false;
     public void Update() {
         foreach (var item in monsterDic.Values) {
             item.TickAILogic();
         }
+
+        if (mapMgr != null) {
+            if (triggerCheck && monsterDic.Count == 0) {
+                bool isExist = mapMgr.SetNextTriggerOn();
+                triggerCheck = false;
+                if (!isExist) {
+                    //关卡技术战斗胜利
+                    EndBattle(true, entitySelfPlayer.HP);
+                }
+            }
+        }
+    }
+
+    public void EndBattle(bool isWin, int restHP) {
+        isPauseGame = true;
+        AudioSvc.Instance.StopBgMusic();
+        BattleSys.Instance.EndBattle(isWin, restHP);
     }
 
     private void LoadPlayer(MapCfg mapData) {
@@ -121,7 +145,12 @@ public class BattleMgr : MonoBehaviour
 
                 monstePref.SetActive(false);
                 monsterDic.Add(monstePref.name, monsterEntity);
-                GameRoot.Instance.dynamicWnd.AddHpItemInfo(monstePref.name, mc.hpRoot, monsterEntity.HP);
+                if (md.mCfg.mType == MonsterType.Normal) {
+                    GameRoot.Instance.dynamicWnd.AddHpItemInfo(monstePref.name, mc.hpRoot, monsterEntity.HP);
+                }
+                else if (md.mCfg.mType == MonsterType.Boss) {
+                    BattleSys.Instance.playerCtrlWnd.SetBossHPBar(true);
+                }
             }
         }
     }

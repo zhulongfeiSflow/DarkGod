@@ -100,6 +100,9 @@ public class Constants
     public const string UIOpenPage = "uiOpenPage";
     public const string FBItemEnter = "fbitem";
 
+    public const string FBLose = "fblose";
+    public const string FBLogoEnter = "fbwin";
+
     //屏幕标准宽高
     public const int ScreenStandardWidth = 1334;
     public const int ScreenStandardHeght = 750;

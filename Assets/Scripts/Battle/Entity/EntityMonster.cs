@@ -46,6 +46,12 @@ public class EntityMonster : EntityBase
         }
 
         if (currentAniState == AniState.Idle || currentAniState == AniState.Move) {
+
+            if (battleMgr.isPauseGame) {
+                Idle();
+                return;
+            }
+
             float delta = Time.deltaTime;
             checkCountTime += delta;
             if (checkCountTime < checkTime) {
@@ -129,5 +135,15 @@ public class EntityMonster : EntityBase
         else {
             return false;
         }
+    }
+
+    public override void SetHPVal(int oldVal, int newVal) {
+        if (md.mCfg.mType == MonsterType.Boss) {
+            BattleSys.Instance.playerCtrlWnd.SetBossHPBarVal(oldVal, newVal, Props.hp);
+        }
+        else {
+            base.SetHPVal(oldVal, newVal);
+        }
+
     }
 }

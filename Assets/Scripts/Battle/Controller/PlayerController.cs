@@ -63,6 +63,10 @@ public class PlayerController : Controller
             UpDateMixBlend();
         }
 
+        if (BattleSys.Instance.battleMgr != null && BattleSys.Instance.battleMgr.isPauseGame) {
+            return;
+        }
+
         if (isMove) {
             //设置方向
             SetDir();
